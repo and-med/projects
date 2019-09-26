@@ -2,6 +2,7 @@
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using TimeZonesApp.Data.Entities;
+using TimeZonesApp.Data.Infrastructure;
 
 namespace TimeZonesApp.Data.DI
 {
@@ -15,6 +16,8 @@ namespace TimeZonesApp.Data.DI
             services.AddIdentityCore<User>()
                 .AddRoles<Role>()
                 .AddEntityFrameworkStores<TimeZonesContext>();
+
+            services.AddScoped<IUnitOfWorkFactory, EfUnitOfWorkFactory>();
         }
     }
 }

@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace TimeZonesApp.Domain.Entities
+﻿namespace TimeZonesApp.Domain.Entities
 {
     class User
     {
