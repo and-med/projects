@@ -1,10 +1,24 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace TimeZonesApp.Domain.Entities
+﻿namespace TimeZonesApp.Domain.Entities
 {
-    class UserTimeZone
+    public class UserTimeZone
     {
+        public int Id { get; }
+
+        public int OwnerId { get; }
+
+        public string Name { get; }
+
+        public string CityName { get; }
+
+        public int GMT { get; }
+
+        public UserTimeZone(int id, int ownerId, string name, string cityName, int gmt)
+        {
+            this.Id = id;
+            this.OwnerId = ownerId;
+            this.Name = name;
+            this.CityName = cityName;
+            this.GMT = gmt;
+        }
     }
 }
