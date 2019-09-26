@@ -38,9 +38,16 @@ namespace TimeZonesApp.Data.Infrastructure
             _entities.RemoveRange(entities);
         }
 
-        public async Task<IEnumerable<TEntity>> GetAsync(Expression<Func<TEntity, bool>> expression)
+        public async Task<IEnumerable<TEntity>> GetAsync(Expression<Func<TEntity, bool>> expression = null)
         {
-            return await _entities.Where(expression).ToListAsync();
+            IQueryable<TEntity> baseList = _entities;
+
+            if (expression != null)
+            {
+                baseList = baseList.Where(expression);
+            }
+
+            return await baseList.ToListAsync();
         }
 
         public void Update(TEntity entity)
