@@ -9,6 +9,7 @@ using Microsoft.OpenApi.Models;
 using System.Collections.Generic;
 using System.Text;
 using TimeZonesApp.Data.DI;
+using TimeZonesApp.Domain.DI;
 using TimeZonesApp.Infrastructure.Models;
 
 namespace TimeZonesApp.Api
@@ -25,6 +26,7 @@ namespace TimeZonesApp.Api
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddDataServices(Configuration);
+            services.AddDomainServices();
 
             var jwtSettings = new JwtSettings();
             Configuration.Bind(nameof(JwtSettings), jwtSettings);
