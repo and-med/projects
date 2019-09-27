@@ -11,23 +11,23 @@ namespace TimeZonesApp.Domain.Services
     {
         private readonly IUnitOfWorkFactory uowFactory;
 
-        private readonly IOneWayEntitiesMapper<UserTimeZone, UserTimeZoneDto> userTimeZoneMapper;
+        private readonly IOneWayEntitiesMapper<UserTimeZone, UserTimeZoneGetResponse> userTimeZoneMapper;
 
         public UserTimeZoneService(IUnitOfWorkFactory uowFactory, 
-            IOneWayEntitiesMapper<UserTimeZone, UserTimeZoneDto> userTimeZoneMapper)
+            IOneWayEntitiesMapper<UserTimeZone, UserTimeZoneGetResponse> userTimeZoneMapper)
         {
             this.uowFactory = uowFactory;
             this.userTimeZoneMapper = userTimeZoneMapper;
         }
 
-        public async Task CreateUserTimeZone(UserTimeZoneCreateDto userTimeZoneCreateDto)
+        public async Task CreateUserTimeZone(UserTimeZoneCreateRequest request)
         {
             var userTimeZone = new UserTimeZone
             {
-                Name = userTimeZoneCreateDto.Name,
-                CityName = userTimeZoneCreateDto.CityName,
-                GMT = userTimeZoneCreateDto.GMT,
-                OwnerId = userTimeZoneCreateDto.UserId
+                Name = request.Name,
+                CityName = request.CityName,
+                GMT = request.GMT,
+                OwnerId = request.UserId
             };
 
             using (var uow = this.uowFactory.GetUnitOfWork())
@@ -39,7 +39,7 @@ namespace TimeZonesApp.Domain.Services
             }
         }
 
-        public async Task<IEnumerable<UserTimeZoneDto>> GetUserTimeZones(int userId)
+        public async Task<IEnumerable<UserTimeZoneGetResponse>> GetUserTimeZones(int userId)
         {
             using (var uow = this.uowFactory.GetUnitOfWork())
             {

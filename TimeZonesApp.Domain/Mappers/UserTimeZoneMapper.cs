@@ -4,11 +4,11 @@ using TimeZonesApp.Domain.Models;
 
 namespace TimeZonesApp.Domain.Mappers
 {
-    public class UserTimeZoneMapper : OneWayEntitiesMapper<UserTimeZone, UserTimeZoneDto>
+    public class UserTimeZoneMapper : OneWayEntitiesMapper<UserTimeZone, UserTimeZoneGetResponse>
     {
-        public override UserTimeZoneDto Map(UserTimeZone entity)
+        public override UserTimeZoneGetResponse Map(UserTimeZone entity)
         {
-            return new UserTimeZoneDto
+            return new UserTimeZoneGetResponse
             {
                 Id = entity.Id,
                 Name = entity.Name,

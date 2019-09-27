@@ -1,6 +1,6 @@
 ﻿namespace TimeZonesApp.Domain.Models
 {
-    public class UserTimeZoneCreateDto
+    public class UserTimeZoneCreateRequest
     {
         public string Name { get; set; }
         public string CityName { get; set; }

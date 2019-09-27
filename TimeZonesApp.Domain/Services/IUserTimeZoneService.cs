@@ -6,7 +6,7 @@ namespace TimeZonesApp.Domain.Services
 {
     public interface IUserTimeZoneService
     {
-        Task CreateUserTimeZone(UserTimeZoneCreateDto userTimeZoneCreateDto);
-        Task<IEnumerable<UserTimeZoneDto>> GetUserTimeZones(int userId);
+        Task CreateUserTimeZone(UserTimeZoneCreateRequest userTimeZoneCreateDto);
+        Task<IEnumerable<UserTimeZoneGetResponse>> GetUserTimeZones(int userId);
     }
 }

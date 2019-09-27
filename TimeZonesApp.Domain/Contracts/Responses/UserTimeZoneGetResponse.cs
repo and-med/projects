@@ -4,7 +4,7 @@ using System.Text;
 
 namespace TimeZonesApp.Domain.Models
 {
-    public class UserTimeZoneDto
+    public class UserTimeZoneGetResponse
     {
         public int Id { get; set; }
 

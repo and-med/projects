@@ -13,7 +13,7 @@ namespace TimeZonesApp.Domain.DI
         {
             services.AddScoped<IUserTimeZoneService, UserTimeZoneService>();
 
-            services.AddScoped<IOneWayEntitiesMapper<UserTimeZone, UserTimeZoneDto>, UserTimeZoneMapper>();
+            services.AddScoped<IOneWayEntitiesMapper<UserTimeZone, UserTimeZoneGetResponse>, UserTimeZoneMapper>();
         }
     }
 }
