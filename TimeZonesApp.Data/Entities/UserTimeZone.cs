@@ -9,7 +9,7 @@ namespace TimeZonesApp.Data.Entities
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int Id { get; set; }
 
-        [ForeignKey("User")]
+        [ForeignKey(nameof(User))]
         public int OwnerId { get; set; }
 
         [MaxLength(32)]

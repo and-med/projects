@@ -5,8 +5,23 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="Migrations\20190927214233_Added_RefreshTokens.cs" />
+    <Compile Remove="Migrations\20190927214233_Added_RefreshTokens.Designer.cs" />
+    <Compile Remove="Migrations\20190927215132_Added_RefreshTokens.cs" />
+    <Compile Remove="Migrations\20190927215132_Added_RefreshTokens.Designer.cs" />
+    <Compile Remove="Migrations\20190927222947_Added_RefreshTokens.cs" />
+    <Compile Remove="Migrations\20190927222947_Added_RefreshTokens.Designer.cs" />
+    <Compile Remove="Migrations\20190927223631_Use_Guid_As_RefreshTokenKey.cs" />
+    <Compile Remove="Migrations\20190927223631_Use_Guid_As_RefreshTokenKey.Designer.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="3.0.0" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="3.0.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\TimeZonesApp.Infrastructure\TimeZonesApp.Infrastructure.csproj" />
   </ItemGroup>
 
 </Project>

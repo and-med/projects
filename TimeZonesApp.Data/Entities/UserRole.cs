@@ -5,10 +5,10 @@ namespace TimeZonesApp.Data.Entities
 {
     public class UserRole : IdentityUserRole<int>
     {
-        [ForeignKey("UserId")]
+        [ForeignKey(nameof(UserId))]
         public virtual User User { get; set; }
 
-        [ForeignKey("RoleId")]
+        [ForeignKey(nameof(RoleId))]
         public virtual Role Role { get; set; }
     }
 }

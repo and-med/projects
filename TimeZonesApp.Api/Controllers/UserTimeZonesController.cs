@@ -5,14 +5,16 @@ using Microsoft.Extensions.Logging;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using TimeZonesApp.Api.Auth.Helpers;
-using TimeZonesApp.Domain.Models;
+using TimeZonesApp.Domain.Contracts.Requests;
+using TimeZonesApp.Domain.Contracts.Responses;
 using TimeZonesApp.Domain.Services;
 using TimeZonesApp.Infrastructure;
 
 namespace TimeZonesApp.Api.Controllers
 {
     [ApiController]
-    [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
+    [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, 
+        Roles = Roles.User + "," + Roles.Admin)]
     [Route(Routes.UserTimeZones.Base)]
     public class UserTimeZonesController : ControllerBase
     {
@@ -28,17 +30,39 @@ namespace TimeZonesApp.Api.Controllers
         }
 
         [HttpGet]
-        public Task<IEnumerable<UserTimeZoneGetResponse>> Get()
+        public Task<IEnumerable<UserTimeZoneResponse>> Get()
         {
             int userId = User.GetId();
-            return this.userTimeZoneService.GetUserTimeZones(userId);
+            return this.userTimeZoneService.GetByUser(userId);
+        }
+
+        [HttpGet]
+        [Route("{id:int}")]
+        public Task<UserTimeZoneResponse> Get(int id)
+        {
+            int userId = User.GetId();
+            return this.userTimeZoneService.GetById(id);
         }
 
         [HttpPost]
-        public Task Create(UserTimeZoneCreateRequest createDto)
+        public Task Create(UserTimeZoneCreateRequest request)
         {
-            // TODO: set createDto.OwnerId
-            return userTimeZoneService.CreateUserTimeZone(createDto);
+            int userId = User.GetId();
+            return userTimeZoneService.Create(userId, request);
+        }
+
+        [HttpPut]
+        [Route("{id:int}")]
+        public Task Update(int id, UserTimeZoneUpdateRequest request)
+        {
+            return userTimeZoneService.Update(id, request);
+        }
+
+        [HttpDelete]
+        [Route("{id:int}")]
+        public Task Delete(int id)
+        {
+            return userTimeZoneService.Delete(id);
         }
     }
 }

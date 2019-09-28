@@ -1,20 +1,21 @@
 ﻿using TimeZonesApp.Data.Entities;
+using TimeZonesApp.Domain.Contracts.Responses;
 using TimeZonesApp.Domain.Mappers.Infrastructure;
-using TimeZonesApp.Domain.Models;
 
 namespace TimeZonesApp.Domain.Mappers
 {
-    public class UserTimeZoneMapper : OneWayEntitiesMapper<UserTimeZone, UserTimeZoneGetResponse>
+    public class UserTimeZoneMapper : OneWayEntitiesMapper<UserTimeZone, UserTimeZoneResponse>
     {
-        public override UserTimeZoneGetResponse Map(UserTimeZone entity)
+        public override UserTimeZoneResponse Map(UserTimeZone entity)
         {
-            return new UserTimeZoneGetResponse
+            return new UserTimeZoneResponse
             {
                 Id = entity.Id,
                 Name = entity.Name,
                 CityName = entity.CityName,
                 GMT = entity.GMT,
-                OwnerId = entity.OwnerId
+                OwnerId = entity.OwnerId,
+                OwnerFullName = entity.User.FirstName + " " + entity.User.LastName
             };
         }
     }

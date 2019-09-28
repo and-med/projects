@@ -38,7 +38,70 @@ namespace TimeZonesApp.Data.Infrastructure
             _entities.RemoveRange(entities);
         }
 
-        public async Task<IEnumerable<TEntity>> GetAsync(Expression<Func<TEntity, bool>> expression = null)
+        public async Task<IEnumerable<TEntity>> GetAsync(
+            Expression<Func<TEntity, bool>> expression = null, 
+            params Expression<Func<TEntity, object>>[] includes)
+        {
+            IQueryable<TEntity> baseList = Apply(expression, includes);
+
+            return await baseList.ToListAsync();
+        }
+
+        public async Task<IEnumerable<TEntity>> GetAsync<TNestedEntity>(
+            Expression<Func<TEntity, bool>> expression = null,
+            Expression<Func<TEntity, IEnumerable<TNestedEntity>>> include = null, 
+            Expression<Func<TNestedEntity, object>> thenInclude = null)
+        {
+            IQueryable<TEntity> baseList = ApplyNestedIncludes(expression, include, thenInclude);
+
+            return await baseList.ToListAsync();
+        }
+
+        public async Task<TEntity> SingleOrDefaultAsync(
+            Expression<Func<TEntity, bool>> expression = null, 
+            params Expression<Func<TEntity, object>>[] includes)
+        {
+            IQueryable<TEntity> baseList = Apply(expression, includes);
+
+            return await baseList.SingleOrDefaultAsync();
+        }
+
+        public async Task<TEntity> SingleOrDefaultAsync<TNestedEntity>(
+            Expression<Func<TEntity, bool>> expression = null,
+            Expression<Func<TEntity, IEnumerable<TNestedEntity>>> include = null,
+            Expression<Func<TNestedEntity, object>> thenInclude = null)
+        {
+            IQueryable<TEntity> baseList = ApplyNestedIncludes(expression, include, thenInclude);
+
+            return await baseList.SingleOrDefaultAsync();
+        }
+
+        public void Update(TEntity entity)
+        {
+            _entities.Update(entity);
+        }
+
+        private IQueryable<TEntity> ApplyNestedIncludes<TNestedEntity>(
+            Expression<Func<TEntity, bool>> expression,
+            Expression<Func<TEntity, IEnumerable<TNestedEntity>>> include,
+            Expression<Func<TNestedEntity, object>> thenInclude)
+        {
+            IQueryable<TEntity> baseList = Apply(expression, null);
+
+            if (include != null)
+            {
+                var included = baseList.Include(include);
+                baseList = included;
+                if (thenInclude != null)
+                {
+                    baseList = included.ThenInclude(thenInclude);
+                }
+            }
+
+            return baseList;
+        }
+
+        private IQueryable<TEntity> Apply(Expression<Func<TEntity, bool>> expression, Expression<Func<TEntity, object>>[] includes)
         {
             IQueryable<TEntity> baseList = _entities;
 
@@ -47,12 +110,15 @@ namespace TimeZonesApp.Data.Infrastructure
                 baseList = baseList.Where(expression);
             }
 
-            return await baseList.ToListAsync();
-        }
+            if (includes != null)
+            {
+                foreach (var include in includes)
+                {
+                    baseList = baseList.Include(include);
+                }
+            }
 
-        public void Update(TEntity entity)
-        {
-            _entities.Update(entity);
+            return baseList;
         }
     }
 }

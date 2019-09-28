@@ -7,6 +7,10 @@ namespace TimeZonesApp.Data
 {
     public class TimeZonesContext : IdentityDbContext<User, Role, int, IdentityUserClaim<int>, UserRole, IdentityUserLogin<int>, IdentityRoleClaim<int>, IdentityUserToken<int>>
     {
+        public DbSet<UserTimeZone> UserTimeZones { get; set; }
+
+        public DbSet<RefreshToken> RefreshTokens { get; set; }
+
         public TimeZonesContext(DbContextOptions<TimeZonesContext> options) 
             : base(options)
         {

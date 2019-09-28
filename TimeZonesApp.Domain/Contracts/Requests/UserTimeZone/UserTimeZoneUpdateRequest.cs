@@ -1,10 +1,9 @@
-﻿namespace TimeZonesApp.Domain.Models
+﻿namespace TimeZonesApp.Domain.Contracts.Requests
 {
-    public class UserTimeZoneCreateRequest
+    public class UserTimeZoneUpdateRequest
     {
         public string Name { get; set; }
         public string CityName { get; set; }
         public int GMT { get; set; }
-        public int UserId { get; set; }
     }
 }
