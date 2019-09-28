@@ -1,3 +1,4 @@
+using FluentValidation.AspNetCore;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
@@ -6,6 +7,7 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.OpenApi.Models;
 using System.Collections.Generic;
 using TimeZonesApp.Api.Auth.DI;
+using TimeZonesApp.Api.Filters;
 using TimeZonesApp.Data.DI;
 using TimeZonesApp.Domain.DI;
 using TimeZonesApp.Infrastructure.Models;
@@ -27,7 +29,17 @@ namespace TimeZonesApp.Api
             services.AddDomainServices();
             services.AddAuthServices(Configuration);
 
-            services.AddControllers();
+            services.AddControllers()
+                .ConfigureApiBehaviorOptions(options =>
+                {
+                    options.InvalidModelStateResponseFactory = InvalidModelStateResponseHandler.Handle;
+                })
+                .AddFluentValidation(config =>
+                {
+                    config.RegisterValidatorsFromAssemblyContaining<DomainAssemblyType>();
+                    config.RegisterValidatorsFromAssemblyContaining<Startup>();
+                    config.RunDefaultMvcValidationAfterFluentValidationExecutes = false;
+                });
 
             services.AddSwaggerGen(setupAction =>
             {

@@ -7,29 +7,32 @@ using TimeZonesApp.Data.Infrastructure;
 using TimeZonesApp.Domain.Contracts.Requests.User;
 using TimeZonesApp.Domain.Contracts.Responses.User;
 using TimeZonesApp.Domain.Mappers.Infrastructure;
+using TimeZonesApp.Infrastructure.ResponseModels;
 
 namespace TimeZonesApp.Domain.Services
 {
     public class UserService : IUserService
     {
-        private readonly IUnitOfWorkFactory uowFactory;
+        private readonly IRepository<User> userRepository;
 
         private readonly UserManager<User> userManager;
 
         private readonly IOneWayEntitiesMapper<User, UserResponse> mapper;
 
-        public UserService(IUnitOfWorkFactory uowFactory, 
+        public UserService(IRepository<User> userRepository, 
             UserManager<User> userManager,
             IOneWayEntitiesMapper<User, UserResponse> mapper)
         {
-            this.uowFactory = uowFactory;
+            this.userRepository = userRepository;
             this.userManager = userManager;
             this.mapper = mapper;
         }
 
-        public async Task Create(UserCreateRequest request)
+        public async Task<Response> Create(UserCreateRequest request)
         {
             var existing = await userManager.FindByEmailAsync(request.Email);
+
+            var response = new Response();
 
             if (existing == null)
             {
@@ -41,19 +44,48 @@ namespace TimeZonesApp.Domain.Services
                     UserName = request.Email
                 };
 
-                await userManager.CreateAsync(user, request.Password);
-                await userManager.AddToRolesAsync(user, request.Roles);
+                var creationResult = await userManager.CreateAsync(user, request.Password);
+
+                if (creationResult.Succeeded)
+                {
+                    await userManager.AddToRolesAsync(user, request.Roles);
+                }
+                else
+                {
+                    response = new Response(creationResult.Errors.Select(e => e.Description));
+                }
             }
+            else
+            {
+                response = new Response(new[] { "User with such an email already exists" });
+            }
+
+            return response;
         }
 
-        public async Task Update(int userId, UserUpdateRequest request)
+        public async Task<Response> Update(int userId, UserUpdateRequest request)
         {
-            using (var uow = uowFactory.GetUnitOfWork())
+            var response = new Response();
+
+            var user = await userRepository.SingleOrDefaultAsync(u => u.Id == userId, u => u.UserRoles, ur => ur.Role);
+
+            if (user == null)
             {
-                var repository = uow.GetRepository<User>();
+                response = new Response(new[] { "User with this id does not exist " });
+            }
 
-                var user = await repository.SingleOrDefaultAsync(u => u.Id == userId, u => u.UserRoles, ur => ur.Role);
+            if (response.Success && request.Email != user.Email)
+            {
+                var existing = await userManager.FindByEmailAsync(request.Email);
 
+                if (existing != null)
+                {
+                    response = new Response(new[] { "User with such an email already exists " });
+                }
+            }
+
+            if (response.Success)
+            {
                 var currRoles = user.UserRoles.Select(ur => ur.Role.Name);
 
                 if (request.Roles.Count() != currRoles.Count() || !request.Roles.All(currRoles.Contains))
@@ -69,40 +101,45 @@ namespace TimeZonesApp.Domain.Services
 
                 await userManager.UpdateAsync(user);
             }
+
+            return response;
         }
 
-        public async Task Delete(int id, int currentUserId)
+        public async Task<Response> Delete(int id)
         {
-            if (id != currentUserId)
+            var response = new Response();
+            var user = await userManager.FindByIdAsync(id.ToString());
+
+            if (user == null)
             {
-                var user = await userManager.FindByIdAsync(id.ToString());
+                response = new Response(new[] { "User with this id does not exist" });
+            }
+            else
+            {
                 await userManager.DeleteAsync(user);
             }
+
+            return response;
         }
 
         public async Task<IEnumerable<UserResponse>> Get()
         {
-            using (var uow = uowFactory.GetUnitOfWork())
-            {
-                var repository = uow.GetRepository<User>();
+            var users = await userRepository.GetAsync(null, u => u.UserRoles, ur => ur.Role);
 
-                var users = await repository.GetAsync(null, u => u.UserRoles, ur => ur.Role);
-
-                return mapper.Map(users);
-            }
+            return mapper.Map(users);
         }
 
-        public async Task<UserResponse> GetById(int id)
+        public async Task<DataResponse<UserResponse>> GetById(int id)
         {
-            using (var uow = uowFactory.GetUnitOfWork())
+            var user = await userRepository.SingleOrDefaultAsync(u => u.Id == id, 
+                u => u.UserRoles, ur => ur.Role);
+
+            if (user == null)
             {
-                var repository = uow.GetRepository<User>();
-
-                var users = await repository.SingleOrDefaultAsync(u => u.Id == id, 
-                    u => u.UserRoles, ur => ur.Role);
-
-                return mapper.Map(users);
+                return new DataResponse<UserResponse>(new[] { "The user was not found " });
             }
+
+            return new DataResponse<UserResponse>(mapper.Map(user));
         }
     }
 }

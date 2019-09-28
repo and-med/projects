@@ -6,14 +6,15 @@ namespace TimeZonesApp.Domain.Mappers
 {
     public class UserTimeZoneMapper : OneWayEntitiesMapper<UserTimeZone, UserTimeZoneResponse>
     {
-        public override UserTimeZoneResponse Map(UserTimeZone entity)
+        public override UserTimeZoneResponse MapEntity(UserTimeZone entity)
         {
             return new UserTimeZoneResponse
             {
                 Id = entity.Id,
                 Name = entity.Name,
                 CityName = entity.CityName,
-                GMT = entity.GMT,
+                HoursDiffToGMT = entity.HoursDiffToGMT,
+                MinutesDiffToGMT = entity.MinutesDiffToGMT,
                 OwnerId = entity.OwnerId,
                 OwnerFullName = entity.User.FirstName + " " + entity.User.LastName
             };

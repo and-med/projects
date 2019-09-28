@@ -10,32 +10,34 @@ namespace TimeZonesApp.Data.Infrastructure
     public class GenericEfRepository<TEntity> : IRepository<TEntity>
         where TEntity : class
     {
-        private readonly DbSet<TEntity> _entities;
+        private readonly DbContext context;
+        private readonly DbSet<TEntity> entities;
 
         public GenericEfRepository(TimeZonesContext context)
         {
-            _entities = context.Set<TEntity>();
+            this.context = context;
+            entities = context.Set<TEntity>();
         }
 
         public TEntity Create(TEntity entity)
         {
-            var response = _entities.Add(entity);
+            var response = entities.Add(entity);
             return response.Entity;
         }
 
         public void Create(IEnumerable<TEntity> entities)
         {
-            _entities.AddRange(entities);
+            this.entities.AddRange(entities);
         }
 
         public void Delete(TEntity entity)
         {
-            _entities.Remove(entity);
+            entities.Remove(entity);
         }
 
         public void Delete(IEnumerable<TEntity> entities)
         {
-            _entities.RemoveRange(entities);
+            this.entities.RemoveRange(entities);
         }
 
         public async Task<IEnumerable<TEntity>> GetAsync(
@@ -78,7 +80,7 @@ namespace TimeZonesApp.Data.Infrastructure
 
         public void Update(TEntity entity)
         {
-            _entities.Update(entity);
+            entities.Update(entity);
         }
 
         private IQueryable<TEntity> ApplyNestedIncludes<TNestedEntity>(
@@ -103,7 +105,7 @@ namespace TimeZonesApp.Data.Infrastructure
 
         private IQueryable<TEntity> Apply(Expression<Func<TEntity, bool>> expression, Expression<Func<TEntity, object>>[] includes)
         {
-            IQueryable<TEntity> baseList = _entities;
+            IQueryable<TEntity> baseList = entities;
 
             if (expression != null)
             {
@@ -119,6 +121,11 @@ namespace TimeZonesApp.Data.Infrastructure
             }
 
             return baseList;
+        }
+
+        public Task SaveChangesAsync()
+        {
+            return context.SaveChangesAsync();
         }
     }
 }

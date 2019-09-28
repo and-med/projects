@@ -7,7 +7,7 @@ namespace TimeZonesApp.Domain.Mappers
 {
     public class UsersMapper : OneWayEntitiesMapper<User, UserResponse>
     {
-        public override UserResponse Map(User entity)
+        public override UserResponse MapEntity(User entity)
         {
             return new UserResponse
             {

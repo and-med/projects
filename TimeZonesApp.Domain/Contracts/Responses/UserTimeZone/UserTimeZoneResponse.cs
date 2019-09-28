@@ -12,6 +12,8 @@
 
         public string CityName { get; set; }
 
-        public int GMT { get; set; }
+        public int HoursDiffToGMT { get; set; }
+
+        public int MinutesDiffToGMT { get; set; }
     }
 }

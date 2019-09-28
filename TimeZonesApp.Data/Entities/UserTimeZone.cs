@@ -12,13 +12,17 @@ namespace TimeZonesApp.Data.Entities
         [ForeignKey(nameof(User))]
         public int OwnerId { get; set; }
 
-        [MaxLength(32)]
+        [Required]
+        [MaxLength(128)]
         public string Name { get; set; }
 
+        [Required]
         [MaxLength(128)]
         public string CityName { get; set; }
         
-        public int GMT { get; set; }
+        public int HoursDiffToGMT { get; set; }
+
+        public int MinutesDiffToGMT { get; set;  }
 
         public virtual User User { get; set; }
     }

@@ -24,20 +24,15 @@ namespace TimeZonesApp.Api.Controllers
         {
             if (!ModelState.IsValid)
             {
-                return BadRequest(new AuthFailedResponse
-                {
-                    Errors = ModelState.Values.SelectMany(x => x.Errors.Select(e => e.ErrorMessage))
-                });
+                return BadRequest(new AuthFailedResponse(
+                    ModelState.Values.SelectMany(x => x.Errors.Select(e => e.ErrorMessage))));
             }
 
             var authResponse = await this.identityService.RegisterAsync(request);
 
             if (!authResponse.Success)
             {
-                return BadRequest(new AuthFailedResponse
-                {
-                    Errors = authResponse.Errors
-                });
+                return BadRequest(new AuthFailedResponse(authResponse.Errors));
             }
 
             return Ok(new AuthSuccessResponse
@@ -54,10 +49,7 @@ namespace TimeZonesApp.Api.Controllers
 
             if (!authResponse.Success)
             {
-                return BadRequest(new AuthFailedResponse
-                {
-                    Errors = authResponse.Errors
-                });
+                return BadRequest(new AuthFailedResponse(authResponse.Errors));
             }
 
             return Ok(new AuthSuccessResponse
@@ -74,10 +66,7 @@ namespace TimeZonesApp.Api.Controllers
 
             if (!authResponse.Success)
             {
-                return BadRequest(new AuthFailedResponse
-                {
-                    Errors = authResponse.Errors
-                });
+                return BadRequest(new AuthFailedResponse(authResponse.Errors));
             }
 
             return Ok(new AuthSuccessResponse

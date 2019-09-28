@@ -13,6 +13,8 @@
     <Compile Remove="Migrations\20190927222947_Added_RefreshTokens.Designer.cs" />
     <Compile Remove="Migrations\20190927223631_Use_Guid_As_RefreshTokenKey.cs" />
     <Compile Remove="Migrations\20190927223631_Use_Guid_As_RefreshTokenKey.Designer.cs" />
+    <Compile Remove="Migrations\20190928132422_Added_UserTimeZones_MinutesToGMTDiff.cs" />
+    <Compile Remove="Migrations\20190928132422_Added_UserTimeZones_MinutesToGMTDiff.Designer.cs" />
   </ItemGroup>
 
   <ItemGroup>

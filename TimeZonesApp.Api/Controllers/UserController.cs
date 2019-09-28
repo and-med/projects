@@ -3,7 +3,6 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using TimeZonesApp.Api.Auth.Helpers;
 using TimeZonesApp.Domain.Contracts.Requests.User;
 using TimeZonesApp.Domain.Contracts.Responses.User;
 using TimeZonesApp.Domain.Services;
@@ -32,31 +31,57 @@ namespace TimeZonesApp.Api.Controllers
 
         [HttpGet]
         [Route("{id:int}")]
-        public Task<UserResponse> Get(int id)
+        public async Task<IActionResult> Get(int id)
         {
-            return this.userService.GetById(id);
+            var response = await this.userService.GetById(id);
+
+            if (response.Success)
+            {
+                return Ok(response.Data);
+            }
+
+            return NotFound(response);
         }
 
         [HttpPost]
-        public Task Create(UserCreateRequest request)
+        public async Task<IActionResult> Create(UserCreateRequest request)
         {
-            return userService.Create(request);
+            var response = await userService.Create(request);
+
+            if (response.Success)
+            {
+                return Ok();
+            }
+
+            return BadRequest(response);
         }
 
         [HttpPut]
         [Route("{id:int}")]
-        public Task Update(int id, UserUpdateRequest request)
+        public async Task<IActionResult> Update(int id, UserUpdateRequest request)
         {
-            return userService.Update(id, request);
+            var response = await userService.Update(id, request);
+
+            if (response.Success)
+            {
+                return Ok();
+            }
+
+            return BadRequest(response);
         }
 
         [HttpDelete]
         [Route("{id:int}")]
-        public Task Delete(int id)
+        public async Task<IActionResult> Delete(int id)
         {
-            int currentUserId = User.GetId();
+            var response = await userService.Delete(id);
 
-            return userService.Delete(id, currentUserId);
+            if (response.Success)
+            {
+                return Ok();
+            }
+
+            return BadRequest(response);
         }
     }
 }

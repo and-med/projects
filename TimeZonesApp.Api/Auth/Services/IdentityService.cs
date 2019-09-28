@@ -27,19 +27,19 @@ namespace TimeZonesApp.Api.Auth.Services
 
         private readonly TokenValidationParameters tokenValidationParameters;
 
-        private readonly IUnitOfWorkFactory uowFactory;
+        private readonly IRepository<RefreshToken> repository;
 
         public IdentityService(UserManager<User> userManager,
             RoleManager<Role> roleManager,
             JwtSettings jwtSettings, 
             TokenValidationParameters tokenValidationParameters,
-            IUnitOfWorkFactory uowFactory)
+            IRepository<RefreshToken> repository)
         {
             this.userManager = userManager;
             this.roleManager = roleManager;
             this.jwtSettings = jwtSettings;
             this.tokenValidationParameters = tokenValidationParameters;
-            this.uowFactory = uowFactory;
+            this.repository = repository;
         }
 
         public async Task<AuthenticationResult> RegisterAsync(UserRegistrationRequest request)
@@ -72,12 +72,7 @@ namespace TimeZonesApp.Api.Auth.Services
 
             await this.userManager.AddToRoleAsync(newUser, Roles.User);
 
-            using (var uow = this.uowFactory.GetUnitOfWork())
-            {
-                var repository = uow.GetRepository<RefreshToken>();
-
-                return await GenerateAuthenticationResultForUserAsync(newUser, uow, repository);
-            }
+            return await GenerateAuthenticationResultForUserAsync(newUser);
         }
 
         public async Task<AuthenticationResult> LoginAsync(UserLoginRequest request)
@@ -102,12 +97,7 @@ namespace TimeZonesApp.Api.Auth.Services
                 };
             }
 
-            using (var uow = this.uowFactory.GetUnitOfWork())
-            {
-                var repository = uow.GetRepository<RefreshToken>();
-
-                return await GenerateAuthenticationResultForUserAsync(user, uow, repository);
-            }
+            return await GenerateAuthenticationResultForUserAsync(user);
         }
 
         public async Task<AuthenticationResult> RefreshTokenAsync(RefreshTokenRequest request)
@@ -139,31 +129,26 @@ namespace TimeZonesApp.Api.Auth.Services
             var jti = 
                 Guid.Parse(validatedToken.Claims.Single(x => x.Type == JwtRegisteredClaimNames.Jti).Value);
 
-            using (var uow = this.uowFactory.GetUnitOfWork())
+            var storedRefreshToken = await repository.SingleOrDefaultAsync(x => x.Token == request.RefreshToken);
+
+            if (storedRefreshToken == null 
+                || DateTime.UtcNow > storedRefreshToken.ExpiryDate
+                || storedRefreshToken.Invalidated
+                || storedRefreshToken.Used
+                || storedRefreshToken.JwtId != jti)
             {
-                var repository = uow.GetRepository<RefreshToken>();
-
-                var storedRefreshToken = await repository.SingleOrDefaultAsync(x => x.Token == request.RefreshToken);
-
-                if (storedRefreshToken == null 
-                    || DateTime.UtcNow > storedRefreshToken.ExpiryDate
-                    || storedRefreshToken.Invalidated
-                    || storedRefreshToken.Used
-                    || storedRefreshToken.JwtId != jti)
+                return new AuthenticationResult
                 {
-                    return new AuthenticationResult
-                    {
-                        Errors = new[] { "Invalid refresh token" }
-                    };
-                }
-
-                storedRefreshToken.Used = true;
-                repository.Update(storedRefreshToken);
-
-                var user = await userManager.FindByIdAsync(validatedToken.GetId().ToString());
-
-                return await GenerateAuthenticationResultForUserAsync(user, uow, repository);
+                    Errors = new[] { "Invalid refresh token" }
+                };
             }
+
+            storedRefreshToken.Used = true;
+            repository.Update(storedRefreshToken);
+
+            var user = await userManager.FindByIdAsync(validatedToken.GetId().ToString());
+
+            return await GenerateAuthenticationResultForUserAsync(user);
         }
 
         private ClaimsPrincipal GetPrincipalFromToken(string token)
@@ -195,8 +180,7 @@ namespace TimeZonesApp.Api.Auth.Services
                     StringComparison.InvariantCultureIgnoreCase);
         }
 
-        private async Task<AuthenticationResult> GenerateAuthenticationResultForUserAsync(User user, 
-            IUnitOfWork uow, IRepository<RefreshToken> refreshTokenRepository)
+        private async Task<AuthenticationResult> GenerateAuthenticationResultForUserAsync(User user)
         {
             var tokenHandler = new JwtSecurityTokenHandler();
             var key = Encoding.ASCII.GetBytes(jwtSettings.Secret);
@@ -246,9 +230,9 @@ namespace TimeZonesApp.Api.Auth.Services
                 ExpiryDate = DateTime.UtcNow.AddMonths(6)
             };
 
-            refreshTokenRepository.Create(refreshToken);
+            repository.Create(refreshToken);
 
-            await uow.SaveChangesAsync();
+            await repository.SaveChangesAsync();
 
             return new AuthenticationResult
             {

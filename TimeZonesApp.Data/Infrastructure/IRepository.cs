@@ -25,5 +25,6 @@ namespace TimeZonesApp.Data.Infrastructure
         void Update(TEntity entity);
         void Delete(TEntity entity);
         void Delete(IEnumerable<TEntity> entities);
+        Task SaveChangesAsync();
     }
 }

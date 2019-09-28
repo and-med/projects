@@ -1,7 +1,8 @@
 ﻿using System.Collections.Generic;
 using System.Threading.Tasks;
-using TimeZonesApp.Domain.Contracts.Requests;
+using TimeZonesApp.Domain.Contracts.Requests.UserTimeZone;
 using TimeZonesApp.Domain.Contracts.Responses;
+using TimeZonesApp.Infrastructure.ResponseModels;
 
 namespace TimeZonesApp.Domain.Services
 {
@@ -11,7 +12,7 @@ namespace TimeZonesApp.Domain.Services
         Task<IEnumerable<UserTimeZoneResponse>> GetByUser(int userId);
         Task<UserTimeZoneResponse> GetById(int id);
         Task Create(int userId, UserTimeZoneCreateRequest request);
-        Task Update(int id, UserTimeZoneUpdateRequest request);
-        Task Delete(int id);
+        Task<Response> Update(int id, UserTimeZoneUpdateRequest request);
+        Task<Response> Delete(int id);
     }
 }

@@ -10,15 +10,18 @@
 
         public string CityName { get; }
 
-        public int GMT { get; }
+        public int HoursDiffToGMT { get; }
 
-        public UserTimeZone(int id, int ownerId, string name, string cityName, int gmt)
+        public int MinutesDiffToGMT { get; }
+
+        public UserTimeZone(int id, int ownerId, string name, string cityName, int hoursDiffToGmt, int minutesDiffToGmt)
         {
             this.Id = id;
             this.OwnerId = ownerId;
             this.Name = name;
             this.CityName = cityName;
-            this.GMT = gmt;
+            this.HoursDiffToGMT = hoursDiffToGmt;
+            this.MinutesDiffToGMT = minutesDiffToGmt;
         }
     }
 }

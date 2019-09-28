@@ -17,7 +17,7 @@ namespace TimeZonesApp.Data.DI
                 .AddRoles<Role>()
                 .AddEntityFrameworkStores<TimeZonesContext>();
 
-            services.AddScoped<IUnitOfWorkFactory, EfUnitOfWorkFactory>();
+            services.AddScoped(typeof(IRepository<>), typeof(GenericEfRepository<>));
         }
     }
 }

@@ -1,29 +1,14 @@
 ﻿using FluentValidation;
-using Microsoft.AspNetCore.Identity;
-using System.Linq;
-using TimeZonesApp.Data.Entities;
 using TimeZonesApp.Domain.Contracts.Requests.User;
-using TimeZonesApp.Infrastructure;
 
-namespace TimeZonesApp.Domain.Validation
+namespace TimeZonesApp.Domain.Validation.User
 {
-    public class UserCreateRequestValidator : AbstractValidator<UserCreateRequest>
+    public class UserCreateRequestValidator : UserBaseValidator<UserCreateRequest>
     {
-        public UserCreateRequestValidator(UserManager<User> userManager)
+        public UserCreateRequestValidator()
         {
-            RuleFor(x => x.FirstName)
+            RuleFor(u => u.Password)
                 .NotEmpty();
-
-            RuleFor(x => x.LastName)
-                .NotEmpty();
-
-            RuleFor(x => x.Roles)
-                .Cascade(CascadeMode.StopOnFirstFailure)
-                .NotEmpty()
-                .Must(roles =>
-                {
-                    return roles.Count() == roles.Distinct().Count() && roles.All(Roles.AllRoles.Contains);
-                }).WithMessage($"Roles must not repeat and be only values of ({string.Join(" ", Roles.AllRoles)}");
         }
     }
 }

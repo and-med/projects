@@ -1,9 +1,13 @@
 ﻿using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
+using TimeZonesApp.Api.Auth.Authorization;
+using TimeZonesApp.Api.Auth.Authorization.Requirements;
 using TimeZonesApp.Api.Auth.Services;
+using TimeZonesApp.Domain.Contracts.Responses;
 using TimeZonesApp.Infrastructure.Models;
 
 namespace TimeZonesApp.Api.Auth.DI
@@ -41,6 +45,9 @@ namespace TimeZonesApp.Api.Auth.DI
             });
 
             services.AddScoped<IIdentityService, IdentityService>();
+            services.AddScoped<IUserTimeZoneRetrieverService, UserTimeZoneRetrieverService>();
+            services.AddScoped<IAdminOrOwnerRequirement, AdminOrOwnerRequirement>();
+            services.AddScoped<IAuthorizationHandler, AdminOrOwnerHandler>();
         }
     }
 }

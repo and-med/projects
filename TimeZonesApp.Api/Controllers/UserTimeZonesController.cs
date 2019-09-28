@@ -1,11 +1,14 @@
-﻿using Microsoft.AspNetCore.Authentication.JwtBearer;
+﻿using System;
+using System.Collections.Generic;
+using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
-using System.Collections.Generic;
-using System.Threading.Tasks;
+using TimeZonesApp.Api.Auth.Authorization.Requirements;
 using TimeZonesApp.Api.Auth.Helpers;
-using TimeZonesApp.Domain.Contracts.Requests;
+using TimeZonesApp.Api.Auth.Services;
+using TimeZonesApp.Domain.Contracts.Requests.UserTimeZone;
 using TimeZonesApp.Domain.Contracts.Responses;
 using TimeZonesApp.Domain.Services;
 using TimeZonesApp.Infrastructure;
@@ -22,26 +25,40 @@ namespace TimeZonesApp.Api.Controllers
 
         private readonly IUserTimeZoneService userTimeZoneService;
 
+        private readonly IAuthorizationService authorizationService;
+
+        private readonly IAdminOrOwnerRequirement adminOrOwnerRequirement;
+
+        private readonly IUserTimeZoneRetrieverService userTimeZoneRetrieverService;
+
         public UserTimeZonesController(ILogger<UserTimeZonesController> logger, 
-            IUserTimeZoneService userTimeZoneService)
+            IUserTimeZoneService userTimeZoneService, 
+            IAuthorizationService authorizationService,
+            IAdminOrOwnerRequirement adminOrOwnerRequirement,
+            IUserTimeZoneRetrieverService userTimeZoneRetrieverService)
         {
             this.logger = logger;
             this.userTimeZoneService = userTimeZoneService;
+            this.authorizationService = authorizationService;
+            this.adminOrOwnerRequirement = adminOrOwnerRequirement;
+            this.userTimeZoneRetrieverService = userTimeZoneRetrieverService;
         }
 
         [HttpGet]
         public Task<IEnumerable<UserTimeZoneResponse>> Get()
         {
             int userId = User.GetId();
-            return this.userTimeZoneService.GetByUser(userId);
+            return this.userTimeZoneRetrieverService.GetUserTimeZones(userId);
         }
 
         [HttpGet]
         [Route("{id:int}")]
-        public Task<UserTimeZoneResponse> Get(int id)
+        public Task<IActionResult> Get(int id)
         {
-            int userId = User.GetId();
-            return this.userTimeZoneService.GetById(id);
+            return AuthorizeAccessToEntity(id, entity => 
+            {
+                return Task.FromResult<IActionResult>(Ok(entity));
+            });
         }
 
         [HttpPost]
@@ -53,16 +70,51 @@ namespace TimeZonesApp.Api.Controllers
 
         [HttpPut]
         [Route("{id:int}")]
-        public Task Update(int id, UserTimeZoneUpdateRequest request)
+        public Task<IActionResult> Update(int id, UserTimeZoneUpdateRequest request)
         {
-            return userTimeZoneService.Update(id, request);
+            return AuthorizeAccessToEntity(id, async entity =>
+            {
+                var response = await userTimeZoneService.Update(id, request);
+
+                if (response.Success)
+                {
+                    return Ok();
+                }
+
+                return BadRequest(response);
+            });
         }
 
         [HttpDelete]
         [Route("{id:int}")]
-        public Task Delete(int id)
+        public Task<IActionResult> Delete(int id)
         {
-            return userTimeZoneService.Delete(id);
+            return AuthorizeAccessToEntity(id, async entity =>
+            {
+                var response = await userTimeZoneService.Delete(id);
+
+                if (response.Success)
+                {
+                    return Ok();
+                }
+
+                return BadRequest(response);
+            });
+        }
+
+        private async Task<IActionResult> AuthorizeAccessToEntity(int entityId, 
+            Func<UserTimeZoneResponse, Task<IActionResult>> action)
+        {
+            var entity = await this.userTimeZoneService.GetById(entityId);
+
+            var authResponse = await authorizationService.AuthorizeAsync(User, entity, adminOrOwnerRequirement);
+
+            if (authResponse.Succeeded)
+            {
+                return await action(entity);
+            }
+
+            return Forbid();
         }
     }
 }

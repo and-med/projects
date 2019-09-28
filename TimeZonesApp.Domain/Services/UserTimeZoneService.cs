@@ -2,56 +2,45 @@
 using System.Threading.Tasks;
 using TimeZonesApp.Data.Entities;
 using TimeZonesApp.Data.Infrastructure;
-using TimeZonesApp.Domain.Contracts.Requests;
+using TimeZonesApp.Domain.Contracts.Requests.UserTimeZone;
 using TimeZonesApp.Domain.Contracts.Responses;
 using TimeZonesApp.Domain.Mappers.Infrastructure;
+using TimeZonesApp.Infrastructure.ResponseModels;
 
 namespace TimeZonesApp.Domain.Services
 {
     public class UserTimeZoneService : IUserTimeZoneService
     {
-        private readonly IUnitOfWorkFactory uowFactory;
+        private readonly IRepository<UserTimeZone> repository;
 
         private readonly IOneWayEntitiesMapper<UserTimeZone, UserTimeZoneResponse> userTimeZoneMapper;
 
-        public UserTimeZoneService(IUnitOfWorkFactory uowFactory, 
+        public UserTimeZoneService(IRepository<UserTimeZone> repository, 
             IOneWayEntitiesMapper<UserTimeZone, UserTimeZoneResponse> userTimeZoneMapper)
         {
-            this.uowFactory = uowFactory;
+            this.repository = repository;
             this.userTimeZoneMapper = userTimeZoneMapper;
         }
 
         public async Task<IEnumerable<UserTimeZoneResponse>> Get()
         {
-            using (var uow = this.uowFactory.GetUnitOfWork())
-            {
-                var repository = uow.GetRepository<UserTimeZone>();
-                var entities = await repository.GetAsync(null, t => t.User);
+            var entities = await repository.GetAsync(null, t => t.User);
 
-                return userTimeZoneMapper.Map(entities);
-            }
+            return userTimeZoneMapper.Map(entities);
         }
 
         public async Task<IEnumerable<UserTimeZoneResponse>> GetByUser(int userId)
         {
-            using (var uow = this.uowFactory.GetUnitOfWork())
-            {
-                var repository = uow.GetRepository<UserTimeZone>();
-                var entities = await repository.GetAsync(t => t.OwnerId == userId, t => t.User);
+            var entities = await repository.GetAsync(t => t.OwnerId == userId, t => t.User);
 
-                return userTimeZoneMapper.Map(entities);
-            }
+            return userTimeZoneMapper.Map(entities);
         }
 
         public async Task<UserTimeZoneResponse> GetById(int id)
         {
-            using (var uow = this.uowFactory.GetUnitOfWork())
-            {
-                var repository = uow.GetRepository<UserTimeZone>();
-                var entity = await repository.SingleOrDefaultAsync(t => t.Id == id, t => t.User);
+            var entity = await repository.SingleOrDefaultAsync(t => t.Id == id, t => t.User);
 
-                return userTimeZoneMapper.Map(entity);
-            }
+            return userTimeZoneMapper.Map(entity);
         }
 
         public async Task Create(int userId, UserTimeZoneCreateRequest request)
@@ -60,45 +49,54 @@ namespace TimeZonesApp.Domain.Services
             {
                 Name = request.Name,
                 CityName = request.CityName,
-                GMT = request.GMT,
+                HoursDiffToGMT = request.HoursDiffToGMT,
+                MinutesDiffToGMT = request.MinutesDiffToGMT,
                 OwnerId = userId
             };
 
-            using (var uow = this.uowFactory.GetUnitOfWork())
-            {
-                var repository = uow.GetRepository<UserTimeZone>();
-                repository.Create(userTimeZone);
+            repository.Create(userTimeZone);
 
-                await uow.SaveChangesAsync();
-            }
+            await repository.SaveChangesAsync();
         }
 
-        public async Task Update(int id, UserTimeZoneUpdateRequest request)
+        public async Task<Response> Update(int id, UserTimeZoneUpdateRequest request)
         {
-            using (var uow = this.uowFactory.GetUnitOfWork())
-            {
-                var repository = uow.GetRepository<UserTimeZone>();
-                var userTimeZone = await repository.SingleOrDefaultAsync(t => t.Id == id);
+            var response = new Response();
+            var userTimeZone = await repository.SingleOrDefaultAsync(t => t.Id == id);
 
+            if (userTimeZone == null)
+            {
+                response = new Response(new[] { "Entity with such id does not exist" });
+            }
+            else
+            {
                 userTimeZone.Name = request.Name;
                 userTimeZone.CityName = request.CityName;
-                userTimeZone.GMT = request.GMT;
+                userTimeZone.HoursDiffToGMT = request.HoursDiffToGMT;
+                userTimeZone.MinutesDiffToGMT = request.MinutesDiffToGMT;
 
-                await uow.SaveChangesAsync();
+                await repository.SaveChangesAsync();
             }
+            return response;
         }
 
-        public async Task Delete(int id)
+        public async Task<Response> Delete(int id)
         {
-            using (var uow = this.uowFactory.GetUnitOfWork())
-            {
-                var repository = uow.GetRepository<UserTimeZone>();
-                var userTimeZone = await repository.SingleOrDefaultAsync(t => t.Id == id);
+            var response = new Response();
+            var userTimeZone = await repository.SingleOrDefaultAsync(t => t.Id == id);
 
+            if (userTimeZone == null)
+            {
+                response = new Response(new[] { "Entity with such id does not exist" });
+            }
+            else
+            {
                 repository.Delete(userTimeZone);
 
-                await uow.SaveChangesAsync();
+                await repository.SaveChangesAsync();
             }
+
+            return response;
         }
     }
 }

@@ -3,15 +3,17 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using TimeZonesApp.Data;
 
 namespace TimeZonesApp.Data.Migrations
 {
     [DbContext(typeof(TimeZonesContext))]
-    partial class TimeZonesContextModelSnapshot : ModelSnapshot
+    [Migration("20190928132728_Added_UserTimeZones_MinutesToGMTDiff")]
+    partial class Added_UserTimeZones_MinutesToGMTDiff
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder

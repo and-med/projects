@@ -1,9 +1,12 @@
 ﻿using System.Collections.Generic;
+using TimeZonesApp.Infrastructure.ResponseModels;
 
 namespace TimeZonesApp.Api.Auth.Contracts.Response
 {
-    public class AuthFailedResponse
+    public class AuthFailedResponse : ErrorResponse
     {
-        public IEnumerable<string> Errors { get; set; }
+        public AuthFailedResponse(IEnumerable<string> errors) : base(errors)
+        {
+        }
     }
 }
