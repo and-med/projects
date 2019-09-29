@@ -56,6 +56,8 @@ namespace TimeZonesApp.Api.Auth.Services
 
             var newUser = new User
             {
+                FirstName = request.FirstName,
+                LastName = request.LastName,
                 Email = request.Email,
                 UserName = request.Email
             };

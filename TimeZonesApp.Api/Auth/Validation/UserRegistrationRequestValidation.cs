@@ -7,6 +7,16 @@ namespace TimeZonesApp.Api.Auth.Validation
     {
         public UserRegistrationRequestValidation()
         {
+            RuleFor(x => x.FirstName)
+                .Cascade(CascadeMode.StopOnFirstFailure)
+                .NotEmpty()
+                .MaximumLength(256);
+
+            RuleFor(x => x.LastName)
+                .Cascade(CascadeMode.StopOnFirstFailure)
+                .NotEmpty()
+                .MaximumLength(256);
+
             RuleFor(x => x.Email)
                 .Cascade(CascadeMode.StopOnFirstFailure)
                 .NotEmpty()
