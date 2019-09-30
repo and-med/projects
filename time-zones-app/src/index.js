@@ -10,14 +10,16 @@ import './index.css';
 import App from './App';
 import authReducer from './store/reducers/auth';
 import timeZonesReducer from './store/reducers/timeZones';
-import { watchAuth, watchTimeZones } from './store/sagas';
+import usersReducer from './store/reducers/users';
+import { watchAuth, watchTimeZones, watchUsers } from './store/sagas';
 import tokenRefreshMiddleware from './store/middlewares/tokenRefreshMiddleware';
 
 const composeEnhancers = process.env.NODE_ENV === 'development' ? window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ : null || compose;
 
 const rootReducer = combineReducers({
     auth: authReducer,
-    timeZones: timeZonesReducer
+    timeZones: timeZonesReducer,
+    users: usersReducer
 });
 
 const sagaMiddleware = createSagaMiddleware();
@@ -28,6 +30,7 @@ const store = createStore(rootReducer, composeEnhancers(
 
 sagaMiddleware.run(watchAuth);
 sagaMiddleware.run(watchTimeZones);
+sagaMiddleware.run(watchUsers);
 
 var app = (
     <Provider store={store}>
