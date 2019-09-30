@@ -88,3 +88,29 @@ export const timeZoneEditFail = (error) => {
         error: error
     };
 }
+
+export const timeZoneDelete = (id) => {
+    return {
+        type: actionTypes.TIME_ZONE_DELETE,
+        id: id
+    };
+}
+
+export const timeZoneDeleteStart = () => {
+    return {
+        type: actionTypes.TIME_ZONE_DELETE_START
+    };
+}
+
+export const timeZoneDeleteSuccess = () => {
+    return {
+        type: actionTypes.TIME_ZONE_DELETE_SUCCESS
+    };
+}
+
+export const timeZoneDeleteFail = (error) => {
+    return {
+        type: actionTypes.TIME_ZONE_DELETE_FAIL,
+        error: error
+    };
+}

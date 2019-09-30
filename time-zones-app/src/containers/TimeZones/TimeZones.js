@@ -16,6 +16,15 @@ const TimeZones = props => {
         props.onTimeZonesGet(diff);
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
+    useEffect(() => {
+        if (props.deleted) {
+            const diff = new Date().getTimezoneOffset();
+            props.onTimeZonesGet(diff);
+            setDeleting(false);
+            setToDelete({id: 0, name: ''});
+        }
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [props.deleted])
     const [deleting, setDeleting] = useState(false);
     const [toDelete, setToDelete] = useState({ id: 0, name: '' });
 
@@ -27,6 +36,11 @@ const TimeZones = props => {
 
     const cancelDeleteHandler = () => {
         setDeleting(false);
+        setToDelete({id: 0, name: ''});
+    }
+
+    const confirmedDeleteTimeZoneHandler = () => {
+        props.onDeleteTimeZone(toDelete.id);
     }
 
     let timeZones = null;
@@ -57,9 +71,11 @@ const TimeZones = props => {
     return (
         <div className={classes.TimeZonesWrapper}>
             <Modal show={deleting} modalClosed={cancelDeleteHandler}>
-                <p>Are you sure you want do delete time zone `{toDelete.name}`?</p>
+                {!props.deleting 
+                    ? <p>Are you sure you want do delete time zone `{toDelete.name}`?</p>
+                    : <Spinner />}
                 <div>
-                    <Button btnType="Danger">Yes</Button>
+                    <Button btnType="Danger" clicked={confirmedDeleteTimeZoneHandler}>Yes</Button>
                     <Button btnType="Success" clicked={cancelDeleteHandler}>No</Button>
                 </div>
             </Modal>
@@ -77,13 +93,16 @@ const mapStateToProps = state => {
     return {
         timeZones: state.timeZones.timeZones,
         error: state.timeZones.error,
-        loading: state.timeZones.loading
+        loading: state.timeZones.loading,
+        deleting: state.timeZones.deleting,
+        deleted: state.timeZones.deleted
     };
 }
 
 const mapDispatchToProps = dispatch => {
     return {
-        onTimeZonesGet: (diff) => dispatch(actions.timeZonesGet(diff))
+        onTimeZonesGet: (diff) => dispatch(actions.timeZonesGet(diff)),
+        onDeleteTimeZone: (id) => dispatch(actions.timeZoneDelete(id))
     };
 }
 

@@ -37,3 +37,13 @@ export function* timeZoneLoadEditSaga(action) {
         yield put(actions.timeZoneLoadEditFail(error.response.data));
     }
 }
+
+export function* timeZoneDeleteSaga(action) {
+    yield put(actions.timeZoneDeleteStart());
+    try {
+        const response = yield axiosTimeZones.delete('/' + action.id);
+        yield put(actions.timeZoneDeleteSuccess(response.data));
+    } catch (error) {
+        yield put(actions.timeZoneDeleteFail(error.response.data));
+    }
+}

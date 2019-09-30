@@ -28,5 +28,9 @@ export {
     timeZoneLoadEditReset,
     timeZoneLoadEditStart,
     timeZoneLoadEditSuccess,
-    timeZoneLoadEditFail
+    timeZoneLoadEditFail,
+    timeZoneDelete,
+    timeZoneDeleteStart,
+    timeZoneDeleteSuccess,
+    timeZoneDeleteFail
 } from './timeZones';
