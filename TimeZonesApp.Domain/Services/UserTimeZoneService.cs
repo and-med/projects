@@ -53,7 +53,7 @@ namespace TimeZonesApp.Domain.Services
                 Name = request.Name,
                 CityName = request.CityName,
                 HoursDiffToGMT = request.HoursDiffToGMT,
-                MinutesDiffToGMT = request.HoursDiffToGMT < 0 ? -request.MinutesDiffToGMT : request.MinutesDiffToGMT,
+                MinutesDiffToGMT = request.MinutesDiffToGMT,
                 OwnerId = userId
             };
 
@@ -105,8 +105,8 @@ namespace TimeZonesApp.Domain.Services
         private UserTimeZoneResponse MapToTimeZoneResponse(UserTimeZone entity, int diffToGMT)
         {
             var now = DateTime.UtcNow;
-            var timeZoneDateTime = now.AddHours(entity.HoursDiffToGMT).AddMinutes(entity.MinutesDiffToGMT);
-            var clientDateTime = now.AddMinutes(diffToGMT);
+            var timeZoneDateTime = now.AddHours(entity.HoursDiffToGMT).AddMinutes(entity.HoursDiffToGMT < 0 ? -entity.MinutesDiffToGMT : entity.MinutesDiffToGMT);
+            var clientDateTime = now.AddMinutes(-diffToGMT);
             return new UserTimeZoneResponse
             {
                 Id = entity.Id,
