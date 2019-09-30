@@ -1,9 +1,34 @@
-import React from 'react';
+import React, { useState } from 'react';
 
 import Button from '../Button/Button';
 import Input from '../Input/Input';
+import { updateObject } from '../../../shared/utility';
+import { checkValidity } from '../../../shared/validation';
+
+const getFormIsValid = (formData) => {        
+    let formIsValid = true;
+    for (let inputIdentifier in formData) {
+        formIsValid = formData[inputIdentifier].valid && formIsValid;
+    }
+    return formIsValid;
+}
 
 const Form = props => {
+    const [formIsValid, setFormIsValid] = useState(getFormIsValid(props.formData));
+
+    const inputChangedHandler = (event, controlName) => {
+        const updatedControls = updateObject(props.formData, {
+            [controlName]: updateObject(props.formData[controlName], {
+                value: event.target.value,
+                valid: checkValidity(event.target.value, props.formData[controlName].validation),
+                touched: true
+            })
+        });
+
+        props.setFormData(updatedControls);
+        setFormIsValid(getFormIsValid(updatedControls));
+    }
+    
     const formElements = [];
 
     for (let key in props.formData) {
@@ -22,13 +47,13 @@ const Form = props => {
             invalid={!formElement.config.valid}
             shouldValidate={formElement.config.validation}
             touched={formElement.config.touched}
-            changed={(event) => props.inputChangedHandler(event, formElement.id)} />
+            changed={(event) => inputChangedHandler(event, formElement.id)} />
     ));
 
     return (
         <form onSubmit={props.submitHandler}>
             {form}
-            <Button btnType="Success">{props.submitText}</Button>
+            <Button disabled={!formIsValid} btnType="Success">{props.submitText}</Button>
         </form>        
     );
 }

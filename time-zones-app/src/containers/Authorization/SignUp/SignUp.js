@@ -1,9 +1,12 @@
 import React, { useState } from 'react';
+import { connect } from 'react-redux';
+import { Redirect } from 'react-router-dom';
 
 import BorderedBox from '../../../components/UI/BorderedBox/BorderedBox';
 import Form from '../../../components/UI/Form/Form';
-import { updateObject } from '../../../shared/utility';
-import { checkValidity } from '../../../shared/validation';
+import Spinner from '../../../components/UI/Spinner/Spinner';
+import ErrorBlock from '../../../components/UI/ErrorBlock/ErrorBlock';
+import * as actions from '../../../store/actions';
 
 const SignUp = props => {    
     const [signUpForm, setSignUpForm] = useState({
@@ -25,7 +28,7 @@ const SignUp = props => {
             elementType: 'input',
             elementConfig: {
                 type: 'text',
-                placeholder: 'First Name'
+                placeholder: 'First name'
             },
             value: '',
             validation: {
@@ -38,7 +41,7 @@ const SignUp = props => {
             elementType: 'input',
             elementConfig: {
                 type: 'text',
-                placeholder: 'Last Name'
+                placeholder: 'Last name'
             },
             value: '',
             validation: {
@@ -61,32 +64,53 @@ const SignUp = props => {
             valid: false,
             touched: false
         }
-    });    
-
-    const inputChangedHandler = (event, controlName) => {
-        const updatedControls = updateObject(signUpForm, {
-            [controlName]: updateObject(signUpForm[controlName], {
-                value: event.target.value,
-                valid: checkValidity(event.target.value, signUpForm[controlName].validation),
-                touched: true
-            })
-        });
-        setSignUpForm(updatedControls);
-    }
+    });
 
     const submitHandler = (event) => {
         event.preventDefault();
+        props.onSignUp(signUpForm.firstName.value,
+            signUpForm.lastName.value,
+            signUpForm.email.value,
+            signUpForm.password.value);
+    }
+
+    let form = <Form 
+        submitHandler={submitHandler}
+        submitText={"SIGN UP"}
+        setFormData={setSignUpForm}
+        formData={signUpForm}/>;
+
+    if (props.loading) {
+        form = <Spinner />
+    }
+
+    let authRedirect = null;
+    if (props.isAuthenticated) {
+        authRedirect = <Redirect to="/" />
     }
 
     return (        
         <BorderedBox>
-            <Form 
-                submitHandler={submitHandler}
-                submitText={"SIGN UP"}
-                inputChangedHandler={inputChangedHandler}
-                formData={signUpForm}/>
+            {authRedirect}
+            <ErrorBlock error={props.error}/>
+            {form}
         </BorderedBox>
     );
 }
 
-export default SignUp;
+const mapStateToProps = state => {
+    return {
+        loading: state.auth.loading,
+        error: state.auth.error,
+        isAuthenticated: state.auth.token !== null
+    };
+}
+
+const mapDispatchToProps = dispatch => {
+    return {
+        onSignUp: (firstName, lastName, email, password) => 
+            dispatch(actions.registerUser(firstName, lastName, email, password))
+    };
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(SignUp);
