@@ -1,4 +1,6 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using TimeZonesApp.Data.Entities;
 using TimeZonesApp.Data.Infrastructure;
@@ -22,25 +24,25 @@ namespace TimeZonesApp.Domain.Services
             this.userTimeZoneMapper = userTimeZoneMapper;
         }
 
-        public async Task<IEnumerable<UserTimeZoneResponse>> Get()
+        public async Task<IEnumerable<UserTimeZoneResponse>> Get(int diffToGmt)
         {
             var entities = await repository.GetAsync(null, t => t.User);
 
-            return userTimeZoneMapper.Map(entities);
+            return entities.Select(entity => MapToTimeZoneResponse(entity, diffToGmt));
         }
 
-        public async Task<IEnumerable<UserTimeZoneResponse>> GetByUser(int userId)
+        public async Task<IEnumerable<UserTimeZoneResponse>> GetByUser(int userId, int diffToGmt)
         {
             var entities = await repository.GetAsync(t => t.OwnerId == userId, t => t.User);
-
-            return userTimeZoneMapper.Map(entities);
+            
+            return entities.Select(entity => MapToTimeZoneResponse(entity, diffToGmt));
         }
 
-        public async Task<UserTimeZoneResponse> GetById(int id)
+        public async Task<UserTimeZoneResponse> GetById(int id, int diffToGmt = 0)
         {
             var entity = await repository.SingleOrDefaultAsync(t => t.Id == id, t => t.User);
 
-            return userTimeZoneMapper.Map(entity);
+            return MapToTimeZoneResponse(entity, diffToGmt);
         }
 
         public async Task Create(int userId, UserTimeZoneCreateRequest request)
@@ -50,7 +52,7 @@ namespace TimeZonesApp.Domain.Services
                 Name = request.Name,
                 CityName = request.CityName,
                 HoursDiffToGMT = request.HoursDiffToGMT,
-                MinutesDiffToGMT = request.MinutesDiffToGMT,
+                MinutesDiffToGMT = request.HoursDiffToGMT < 0 ? -request.MinutesDiffToGMT : request.MinutesDiffToGMT,
                 OwnerId = userId
             };
 
@@ -97,6 +99,25 @@ namespace TimeZonesApp.Domain.Services
             }
 
             return response;
+        }
+
+        private UserTimeZoneResponse MapToTimeZoneResponse(UserTimeZone entity, int diffToGMT)
+        {
+            var now = DateTime.UtcNow;
+            var timeZoneDateTime = now.AddHours(entity.HoursDiffToGMT).AddMinutes(entity.MinutesDiffToGMT);
+            var clientDateTime = now.AddMinutes(diffToGMT);
+            return new UserTimeZoneResponse
+            {
+                Id = entity.Id,
+                OwnerId = entity.OwnerId,
+                OwnerFullName = entity.User.FirstName + entity.User.LastName,
+                Name = entity.Name,
+                CityName = entity.CityName,
+                HoursDiffToGMT = entity.HoursDiffToGMT,
+                MinutesDiffToGMT = entity.MinutesDiffToGMT,
+                TimeZoneDateTime = timeZoneDateTime,
+                DiffToClient = timeZoneDateTime - clientDateTime
+            };
         }
     }
 }

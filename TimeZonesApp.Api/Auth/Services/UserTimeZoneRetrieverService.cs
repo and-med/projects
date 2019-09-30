@@ -20,7 +20,7 @@ namespace TimeZonesApp.Api.Auth.Services
             this.userTimeZoneService = userTimeZoneService;
         }
 
-        public async Task<IEnumerable<UserTimeZoneResponse>> GetUserTimeZones(int userId)
+        public async Task<IEnumerable<UserTimeZoneResponse>> GetUserTimeZones(int userId, int diffToGMT)
         {
             var user = await userService.GetById(userId);
             var isAdmin = user.Data.Roles.Contains(Roles.Admin);
@@ -29,11 +29,11 @@ namespace TimeZonesApp.Api.Auth.Services
 
             if (isAdmin)
             {
-                timeZones = await userTimeZoneService.Get();
+                timeZones = await userTimeZoneService.Get(diffToGMT);
             }
             else
             {
-                timeZones = await userTimeZoneService.GetByUser(userId);
+                timeZones = await userTimeZoneService.GetByUser(userId, diffToGMT);
             }
 
             return timeZones;

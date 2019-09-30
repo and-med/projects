@@ -1,4 +1,6 @@
-﻿namespace TimeZonesApp.Domain.Contracts.Responses
+﻿using System;
+
+namespace TimeZonesApp.Domain.Contracts.Responses
 {
     public class UserTimeZoneResponse
     {
@@ -15,5 +17,9 @@
         public int HoursDiffToGMT { get; set; }
 
         public int MinutesDiffToGMT { get; set; }
+
+        public DateTime TimeZoneDateTime { get; set; }
+
+        public TimeSpan DiffToClient { get; set; }
     }
 }

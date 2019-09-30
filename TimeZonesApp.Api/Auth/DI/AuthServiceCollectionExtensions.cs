@@ -7,7 +7,6 @@ using System.Text;
 using TimeZonesApp.Api.Auth.Authorization;
 using TimeZonesApp.Api.Auth.Authorization.Requirements;
 using TimeZonesApp.Api.Auth.Services;
-using TimeZonesApp.Domain.Contracts.Responses;
 using TimeZonesApp.Infrastructure.Models;
 
 namespace TimeZonesApp.Api.Auth.DI

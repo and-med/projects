@@ -45,19 +45,21 @@ namespace TimeZonesApp.Api.Controllers
         }
 
         [HttpGet]
-        public Task<IEnumerable<UserTimeZoneResponse>> Get()
+        public Task<IEnumerable<UserTimeZoneResponse>> Get([FromQuery(Name = "diff")] int diff)
         {
             int userId = User.GetId();
-            return this.userTimeZoneRetrieverService.GetUserTimeZones(userId);
+            return this.userTimeZoneRetrieverService.GetUserTimeZones(userId, diff);
         }
 
         [HttpGet]
         [Route("{id:int}")]
-        public Task<IActionResult> Get(int id)
+        public Task<IActionResult> Get(int id, [FromQuery(Name="diff")] int diff)
         {
-            return AuthorizeAccessToEntity(id, entity => 
+            return AuthorizeAccessToEntity(id, async entity =>
             {
-                return Task.FromResult<IActionResult>(Ok(entity));
+                var response = await userTimeZoneService.GetById(id, diff);
+
+                return Ok(response);
             });
         }
 
@@ -102,7 +104,7 @@ namespace TimeZonesApp.Api.Controllers
             });
         }
 
-        private async Task<IActionResult> AuthorizeAccessToEntity(int entityId, 
+        private async Task<IActionResult> AuthorizeAccessToEntity(int entityId,
             Func<UserTimeZoneResponse, Task<IActionResult>> action)
         {
             var entity = await this.userTimeZoneService.GetById(entityId);

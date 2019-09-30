@@ -29,6 +29,15 @@ namespace TimeZonesApp.Api
             services.AddDomainServices();
             services.AddAuthServices(Configuration);
 
+            services.AddCors(setupAction =>
+            {
+                setupAction.AddPolicy("AllowSpecific", config =>
+                {
+                    config.WithOrigins("http://localhost:3000")
+                        .AllowAnyMethod()
+                        .AllowAnyHeader();
+                });
+            });
             services.AddControllers()
                 .ConfigureApiBehaviorOptions(options =>
                 {
@@ -73,8 +82,13 @@ namespace TimeZonesApp.Api
             {
                 app.UseDeveloperExceptionPage();
             }
+            else
+            {
+                app.UseHsts();
+            }
 
             app.UseHttpsRedirection();
+            app.UseCors("AllowSpecific");
             app.UseRouting();
             app.UseAuthentication();
             app.UseAuthorization();
