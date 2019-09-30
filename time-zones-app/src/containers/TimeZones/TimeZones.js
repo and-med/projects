@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react'
+import React, { useState, useEffect } from 'react'
 import { connect } from 'react-redux';
 import { NavLink } from 'react-router-dom';
 import moment from 'moment';
@@ -8,6 +8,7 @@ import classes from './TimeZones.module.css';
 import * as actions from '../../store/actions';
 import Spinner from '../../components/UI/Spinner/Spinner';
 import Button from '../../components/UI/Button/Button';
+import Modal from '../../components/UI/Modal/Modal';
 
 const TimeZones = props => {
     useEffect(() => {
@@ -15,6 +16,18 @@ const TimeZones = props => {
         props.onTimeZonesGet(diff);
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
+    const [deleting, setDeleting] = useState(false);
+    const [toDelete, setToDelete] = useState({ id: 0, name: '' });
+
+    const deleteTimeZoneHandler = (id, name) => {
+        console.log('Now deleting');
+        setDeleting(true);
+        setToDelete({id, name});
+    }
+
+    const cancelDeleteHandler = () => {
+        setDeleting(false);
+    }
 
     let timeZones = null;
     if (props.loading) {
@@ -34,7 +47,7 @@ const TimeZones = props => {
                         <NavLink to={'/time-zones/update/' + timeZone.id}>
                             <Button btnType="Success">Update</Button>
                         </NavLink>
-                        <Button btnType="Danger">Delete</Button>
+                        <Button btnType="Danger" clicked={() => deleteTimeZoneHandler(timeZone.id, timeZone.name)}>Delete</Button>
                     </div>
                 </div>
             );
@@ -43,6 +56,13 @@ const TimeZones = props => {
 
     return (
         <div className={classes.TimeZonesWrapper}>
+            <Modal show={deleting} modalClosed={cancelDeleteHandler}>
+                <p>Are you sure you want do delete time zone `{toDelete.name}`?</p>
+                <div>
+                    <Button btnType="Danger">Yes</Button>
+                    <Button btnType="Success" clicked={cancelDeleteHandler}>No</Button>
+                </div>
+            </Modal>
             {timeZones}
             <div className={classes.CreateNew}>
                 <NavLink to="/time-zones/create">

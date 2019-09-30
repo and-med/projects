@@ -16,7 +16,7 @@ export function* authUserSaga(action) {
         const decoded = jwtDecode(response.data.token);
         yield localStorage.setItem('token', response.data.token);
         yield localStorage.setItem('refreshToken', response.data.refreshToken);
-        yield put(actions.authSuccess(response.data.token, response.data.refreshToken, decoded.id, decoded.exp));
+        yield put(actions.authSuccess(response.data.token, response.data.refreshToken, decoded.id, decoded.exp, decoded.role));
         
     } catch (error) {
         yield put(actions.authFail(error.response.data));
@@ -37,7 +37,7 @@ export function* authTryAutoSignupSaga(action) {
         yield put(actions.logoutStart());
     } else {
         const decoded = jwtDecode(token);
-        yield put(actions.authSuccess(token, refreshToken, decoded.id, decoded.exp));
+        yield put(actions.authSuccess(token, refreshToken, decoded.id, decoded.exp, decoded.role));
     }
 }
 
@@ -55,7 +55,7 @@ export function* registerUserSaga(action) {
         const decoded = jwtDecode(response.data.token);
         yield localStorage.setItem('token', response.data.token);
         yield localStorage.setItem('refreshToken', response.data.refreshToken);
-        yield put(actions.registerSuccess(response.data.token, response.data.refreshToken, decoded.id, decoded.exp));
+        yield put(actions.registerSuccess(response.data.token, response.data.refreshToken, decoded.id, decoded.exp, decoded.role));
     } catch (error) {
         yield put(actions.registerFail(error.response.data));
     }

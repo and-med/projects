@@ -7,6 +7,7 @@ import Dashboard from './containers/Dashboard/Dashboard';
 import TimeZones from './containers/TimeZones/TimeZones';
 import TimeZoneCreate from './containers/TimeZones/TimeZoneCreate/TimeZoneCreate';
 import TimeZoneUpdate from './containers/TimeZones/TimeZoneUpdate/TimeZoneUpdate';
+import Users from './containers/Users/Users';
 import SignIn from './containers/Authorization/SignIn/SignIn';
 import SignUp from './containers/Authorization/SignUp/SignUp';
 import Logout from './containers/Authorization/Logout/Logout';
@@ -35,6 +36,8 @@ const App = props => {
                 <Route path="/time-zones/create" component={TimeZoneCreate} />
                 <Route path="/time-zones/update/:id(\d+)" component={TimeZoneUpdate} />
                 <Route path="/time-zones" component={TimeZones} />
+                {(props.role === 'Admin' || props.role === 'UserManager') 
+                    ? <Route path="/users" component={Users} /> : null}
                 <Route path="/" exact component={Dashboard} />      
             </Switch>
         )
@@ -51,7 +54,8 @@ const App = props => {
 
 const mapStateToProps = state => {
     return {
-        isAuthenticated: state.auth.token !== null
+        isAuthenticated: state.auth.token !== null,
+        role: state.auth.role
     };
 }
 

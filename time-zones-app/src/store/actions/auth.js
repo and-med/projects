@@ -14,13 +14,14 @@ export const authStart = () => {
     };
 }
 
-export const authSuccess = (token, refreshToken, userId, expiryTime) => {
+export const authSuccess = (token, refreshToken, userId, expiryTime, role) => {
     return {
         type: actionTypes.AUTH_SUCCESS,
         token: token,
         refreshToken: refreshToken,
         userId: userId,
-        expiryTime: expiryTime
+        expiryTime: expiryTime,
+        role: role
     };
 }
 
@@ -61,13 +62,14 @@ export const refreshTokenStart = () => {
     };
 }
 
-export const refreshTokenSuccess = (token, refreshToken, userId, expiryTime) => {
+export const refreshTokenSuccess = (token, refreshToken, userId, expiryTime, role) => {
     return {
         type: actionTypes.REFRESH_TOKEN_SUCCESS,
         token: token,
         refreshToken: refreshToken,
         userId: userId,
-        expiryTime: expiryTime
+        expiryTime: expiryTime,
+        role: role
     };
 }
 
@@ -94,13 +96,14 @@ export const registerStart = () => {
     };
 }
 
-export const registerSuccess = (token, refreshToken, userId, expiryTime ) => {
+export const registerSuccess = (token, refreshToken, userId, expiryTime, role) => {
     return {
         type: actionTypes.REGISTER_SUCCESS,
         token: token,
         refreshToken: refreshToken,
         userId: userId,
-        expiryTime: expiryTime
+        expiryTime: expiryTime,
+        role: role
     };
 }
 

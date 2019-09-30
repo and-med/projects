@@ -6,6 +6,7 @@ const initialState = {
     refreshToken: null,
     userId: null,
     expiryTime: null,
+    role: null,
     error: null,
     loading: false,
     refreshError: null,
@@ -22,6 +23,7 @@ const authSuccess = (state, action) => {
         refreshToken: action.refreshToken,
         userId: action.userId,
         expiryTime: action.expiryTime,
+        role: action.role,
         error: null,
         loading: false
     });
@@ -46,7 +48,8 @@ const logoutSucceeded = (state, action) => {
         token: null,
         refreshToken: null,
         userId: null,
-        expiryTime: null
+        expiryTime: null,
+        role: null
     });
 }
 
@@ -63,6 +66,7 @@ const refreshTokenSuccess = (state, action) => {
         refreshToken: action.refreshToken,
         userId: action.userId,
         expiryTime: action.expiryTime,
+        role: action.role,
         refreshError: null,
         refreshing: false        
     });
@@ -88,6 +92,7 @@ const registerSuccess = (state, action) => {
         refreshToken: action.refreshToken,
         userId: action.userId,
         expiryTime: action.expiryTime,
+        role: action.role,
         error: null,
         loading: false        
     });

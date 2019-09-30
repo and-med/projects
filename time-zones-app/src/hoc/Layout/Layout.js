@@ -20,9 +20,11 @@ const Layout = props => {
         <React.Fragment>
             <Toolbar 
                 isAuthenticated={props.isAuthenticated}
+                role={props.role}
                 drawerToggleClicked={sideDrawerToggleHandler}/>
             <SideDrawer 
                 isAuthenticated={props.isAuthenticated}
+                role={props.role}
                 open={sideDrawerIsVisible}
                 closed={sideDrawerClosedHandler}/>
             <main className={classes.Content}>
@@ -34,7 +36,8 @@ const Layout = props => {
 
 const mapStateToProps = state => {
     return {
-        isAuthenticated: state.auth.token !== null
+        isAuthenticated: state.auth.token !== null,
+        role: state.auth.role
     };
 }
 
