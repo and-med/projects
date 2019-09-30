@@ -26,13 +26,13 @@ namespace TimeZonesApp.Domain.Validation.User
                 .MaximumLength(256)
                 .EmailAddress();
 
-            RuleFor(x => x.Roles)
+            RuleFor(x => x.Role)
                 .Cascade(CascadeMode.StopOnFirstFailure)
                 .NotEmpty()
-                .Must(roles =>
+                .Must(role =>
                 {
-                    return roles.Count() == roles.Distinct().Count() && roles.All(Roles.AllRoles.Contains);
-                }).WithMessage($"Roles must not repeat and be only values of ({string.Join(" ", Roles.AllRoles)}");
+                    return Roles.AllRoles.Contains(role);
+                }).WithMessage($"Role must be any of the following values: ({string.Join(" ", Roles.AllRoles)}");
         }
     }
 }

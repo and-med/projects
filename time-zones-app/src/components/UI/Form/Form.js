@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 
 import Button from '../Button/Button';
 import Input from '../Input/Input';
@@ -15,6 +15,21 @@ const getFormIsValid = (formData) => {
 
 const Form = props => {
     const [formIsValid, setFormIsValid] = useState(getFormIsValid(props.formData));
+    useEffect(() => {
+        if (props.prepopulateObject) {
+            const updatedForm = {};
+            for (let identifier in props.formData) {
+                updatedForm[identifier] = updateObject(props.formData[identifier], {
+                    value: props.prepopulateObject[identifier],
+                    valid: true,
+                    touched: true
+                });
+            }
+            props.setFormData(updatedForm);
+            setFormIsValid(getFormIsValid(updatedForm));
+        }
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [props.prepopulateObject])
 
     const inputChangedHandler = (event, controlName) => {
         const updatedControls = updateObject(props.formData, {
@@ -28,7 +43,7 @@ const Form = props => {
         props.setFormData(updatedControls);
         setFormIsValid(getFormIsValid(updatedControls));
     }
-    
+
     const formElements = [];
 
     for (let key in props.formData) {
@@ -47,6 +62,7 @@ const Form = props => {
             invalid={!formElement.config.valid}
             shouldValidate={formElement.config.validation}
             touched={formElement.config.touched}
+            label={formElement.config.label}
             changed={(event) => inputChangedHandler(event, formElement.id)} />
     ));
 

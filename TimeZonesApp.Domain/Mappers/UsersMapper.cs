@@ -15,7 +15,7 @@ namespace TimeZonesApp.Domain.Mappers
                 FirstName = entity.FirstName,
                 LastName = entity.LastName,
                 Email = entity.Email,
-                Roles = entity.UserRoles.Select(r => r.Role.Name)
+                Role = entity.UserRoles.Select(r => r.Role.Name).FirstOrDefault()
             };
         }
     }

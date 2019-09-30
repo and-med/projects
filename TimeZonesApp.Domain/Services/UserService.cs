@@ -48,7 +48,7 @@ namespace TimeZonesApp.Domain.Services
 
                 if (creationResult.Succeeded)
                 {
-                    await userManager.AddToRolesAsync(user, request.Roles);
+                    await userManager.AddToRoleAsync(user, request.Role);
                 }
                 else
                 {
@@ -86,12 +86,12 @@ namespace TimeZonesApp.Domain.Services
 
             if (response.Success)
             {
-                var currRoles = user.UserRoles.Select(ur => ur.Role.Name);
+                var currRole = user.UserRoles.Select(ur => ur.Role.Name).FirstOrDefault();
 
-                if (request.Roles.Count() != currRoles.Count() || !request.Roles.All(currRoles.Contains))
+                if (currRole != request.Role)
                 {
-                    await userManager.RemoveFromRolesAsync(user, currRoles);
-                    await userManager.AddToRolesAsync(user, request.Roles);
+                    await userManager.RemoveFromRoleAsync(user, currRole);
+                    await userManager.AddToRoleAsync(user, request.Role);
                 }
 
                 user.FirstName = request.FirstName;

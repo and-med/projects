@@ -6,7 +6,10 @@ import {
     logoutStartSaga, 
     authTryAutoSignupSaga,
     registerUserSaga } from './auth';
-import { timeZonesGetSaga } from './timeZones';
+import { 
+    timeZonesGetSaga,
+    timeZoneEditSaga,
+    timeZoneLoadEditSaga } from './timeZones';
 
 export function* watchAuth() {
     yield all([
@@ -19,6 +22,8 @@ export function* watchAuth() {
 
 export function* watchTimeZones() {
     yield all([
-        takeEvery(actionTypes.TIME_ZONES_GET, timeZonesGetSaga)
+        takeEvery(actionTypes.TIME_ZONES_GET, timeZonesGetSaga),
+        takeEvery(actionTypes.TIME_ZONE_EDIT, timeZoneEditSaga),
+        takeEvery(actionTypes.TIME_ZONE_LOADEDIT, timeZoneLoadEditSaga)
     ]);
 }

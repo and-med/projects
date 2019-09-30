@@ -23,7 +23,7 @@ namespace TimeZonesApp.Api.Auth.Services
         public async Task<IEnumerable<UserTimeZoneResponse>> GetUserTimeZones(int userId, int diffToGMT)
         {
             var user = await userService.GetById(userId);
-            var isAdmin = user.Data.Roles.Contains(Roles.Admin);
+            var isAdmin = user.Data.Role == Roles.Admin;
 
             IEnumerable<UserTimeZoneResponse> timeZones;
 

@@ -5,6 +5,8 @@ import { Switch, Route } from 'react-router-dom';
 import Layout from './hoc/Layout/Layout';
 import Dashboard from './containers/Dashboard/Dashboard';
 import TimeZones from './containers/TimeZones/TimeZones';
+import TimeZoneCreate from './containers/TimeZones/TimeZoneCreate/TimeZoneCreate';
+import TimeZoneUpdate from './containers/TimeZones/TimeZoneUpdate/TimeZoneUpdate';
 import SignIn from './containers/Authorization/SignIn/SignIn';
 import SignUp from './containers/Authorization/SignUp/SignUp';
 import Logout from './containers/Authorization/Logout/Logout';
@@ -30,6 +32,8 @@ const App = props => {
                 <Route path="/sign-in" component={SignIn} />
                 <Route path="/sign-up" component={SignUp} />
                 <Route path="/logout" component={Logout} />
+                <Route path="/time-zones/create" component={TimeZoneCreate} />
+                <Route path="/time-zones/update/:id(\d+)" component={TimeZoneUpdate} />
                 <Route path="/time-zones" component={TimeZones} />
                 <Route path="/" exact component={Dashboard} />      
             </Switch>

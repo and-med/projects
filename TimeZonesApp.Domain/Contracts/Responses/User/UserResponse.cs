@@ -12,6 +12,6 @@ namespace TimeZonesApp.Domain.Contracts.Responses.User
 
         public string Email { get; set; }
 
-        public IEnumerable<string> Roles { get; set; }
+        public string Role { get; set; }
     }
 }

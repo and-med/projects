@@ -19,5 +19,14 @@ export {
     timeZonesGet,
     timeZonesGetStart,
     timeZonesGetSuccess,
-    timeZonesGetFail
+    timeZonesGetFail,
+    timeZoneEdit,
+    timeZoneEditStart,
+    timeZoneEditSuccess,
+    timeZoneEditFail,
+    timeZoneLoadEdit,
+    timeZoneLoadEditReset,
+    timeZoneLoadEditStart,
+    timeZoneLoadEditSuccess,
+    timeZoneLoadEditFail
 } from './timeZones';

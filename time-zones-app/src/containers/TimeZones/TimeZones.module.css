@@ -7,6 +7,16 @@
     margin: 20px auto;
 }
 
+.TimeZonesWrapper .CreateNew {
+    padding: 10px;
+    margin: 20px auto;
+    text-align: center;
+}
+
+.TimeZonesWrapper .CreateNew a {
+    text-decoration: none;
+}
+
 .TimeZone {
     height: 100%;
     width: 90%;
@@ -15,4 +25,8 @@
     box-sizing: border-box;
     margin: 20px auto;
     padding: 10px;
+}
+
+.TimeZone div {
+    padding: 3px;
 }
