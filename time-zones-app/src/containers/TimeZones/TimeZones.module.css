@@ -17,6 +17,24 @@
     text-decoration: none;
 }
 
+.SearchWrapper {
+    margin: 20px auto;
+    text-align: left;
+    width: 90%;
+    box-sizing: border-box;
+    padding: 10px;
+}
+
+.SearchWrapper div {
+    display: inline-block;
+}
+
+.SearchWrapper input {
+    display: inline-block;
+    width: 200px;
+}
+
+
 .TimeZone {
     height: 100%;
     width: 90%;

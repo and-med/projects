@@ -45,10 +45,10 @@ namespace TimeZonesApp.Api.Controllers
         }
 
         [HttpGet]
-        public Task<IEnumerable<UserTimeZoneResponse>> Get([FromQuery(Name = "diff")] int diff)
+        public Task<IEnumerable<UserTimeZoneResponse>> Get([FromQuery(Name = "diff")] int diff, [FromQuery(Name = "s")] string search)
         {
             int userId = User.GetId();
-            return this.userTimeZoneRetrieverService.GetUserTimeZones(userId, diff);
+            return this.userTimeZoneRetrieverService.GetUserTimeZones(userId, diff, search);
         }
 
         [HttpGet]

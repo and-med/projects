@@ -1,9 +1,10 @@
 import * as actionTypes from './actionTypes';
 
-export const timeZonesGet = (diff) => {
+export const timeZonesGet = (diff, search) => {
     return {
         type: actionTypes.TIME_ZONES_GET,
-        diff: diff
+        diff: diff,
+        search: search
     };
 }
 

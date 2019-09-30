@@ -8,8 +8,8 @@ namespace TimeZonesApp.Domain.Services
 {
     public interface IUserTimeZoneService
     {
-        Task<IEnumerable<UserTimeZoneResponse>> Get(int diffToGmt);
-        Task<IEnumerable<UserTimeZoneResponse>> GetByUser(int userId, int diffToGmt);
+        Task<IEnumerable<UserTimeZoneResponse>> Get(int diffToGmt, string search);
+        Task<IEnumerable<UserTimeZoneResponse>> GetByUser(int userId, int diffToGmt, string search);
         Task<UserTimeZoneResponse> GetById(int id, int diffToGmt = 0);
         Task Create(int userId, UserTimeZoneCreateRequest request);
         Task<Response> Update(int id, UserTimeZoneUpdateRequest request);

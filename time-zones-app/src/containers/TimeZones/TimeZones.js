@@ -9,24 +9,26 @@ import * as actions from '../../store/actions';
 import Spinner from '../../components/UI/Spinner/Spinner';
 import Button from '../../components/UI/Button/Button';
 import Modal from '../../components/UI/Modal/Modal';
+import Input from '../../components/UI/Input/Input';
 
 const TimeZones = props => {
+    const [deleting, setDeleting] = useState(false);
+    const [toDelete, setToDelete] = useState({ id: 0, name: '' });
+    const [search, setSearch] = useState('');
     useEffect(() => {
         const diff = new Date().getTimezoneOffset();
-        props.onTimeZonesGet(diff);
+        props.onTimeZonesGet(diff, search);
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
     useEffect(() => {
         if (props.deleted) {
             const diff = new Date().getTimezoneOffset();
-            props.onTimeZonesGet(diff);
+            props.onTimeZonesGet(diff, search);
             setDeleting(false);
             setToDelete({id: 0, name: ''});
         }
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [props.deleted])
-    const [deleting, setDeleting] = useState(false);
-    const [toDelete, setToDelete] = useState({ id: 0, name: '' });
 
     const deleteTimeZoneHandler = (id, name) => {
         console.log('Now deleting');
@@ -43,11 +45,17 @@ const TimeZones = props => {
         props.onDeleteTimeZone(toDelete.id);
     }
 
+    const searchChanged = (event) => {
+        setSearch(event.target.value);
+        const diff = new Date().getTimezoneOffset();
+        props.onTimeZonesGet(diff, event.target.value);
+    }
+
     let timeZones = null;
     if (props.loading) {
         timeZones = <Spinner />
     }
-    if (props.timeZones) {
+    else if (props.timeZones) {
         timeZones = props.timeZones.map(timeZone => {
             let time = moment.utc(timeZone.timeZoneDateTime).format('l LT');
             return (
@@ -70,6 +78,10 @@ const TimeZones = props => {
 
     return (
         <div className={classes.TimeZonesWrapper}>
+            <div className={classes.SearchWrapper}>
+                <div>Search:</div>
+                <div><Input elementType={'input'} value={search} changed={searchChanged} /></div>                
+            </div>            
             <Modal show={deleting} modalClosed={cancelDeleteHandler}>
                 {!props.deleting 
                     ? <p>Are you sure you want do delete time zone `{toDelete.name}`?</p>
@@ -101,7 +113,7 @@ const mapStateToProps = state => {
 
 const mapDispatchToProps = dispatch => {
     return {
-        onTimeZonesGet: (diff) => dispatch(actions.timeZonesGet(diff)),
+        onTimeZonesGet: (diff, search) => dispatch(actions.timeZonesGet(diff, search)),
         onDeleteTimeZone: (id) => dispatch(actions.timeZoneDelete(id))
     };
 }

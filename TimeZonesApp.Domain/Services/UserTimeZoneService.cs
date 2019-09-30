@@ -24,16 +24,17 @@ namespace TimeZonesApp.Domain.Services
             this.userTimeZoneMapper = userTimeZoneMapper;
         }
 
-        public async Task<IEnumerable<UserTimeZoneResponse>> Get(int diffToGmt)
+        public async Task<IEnumerable<UserTimeZoneResponse>> Get(int diffToGmt, string search)
         {
-            var entities = await repository.GetAsync(null, t => t.User);
+            var entities = await repository.GetAsync(t => t.Name.Contains(search) || string.IsNullOrEmpty(search), t => t.User);
 
             return entities.Select(entity => MapToTimeZoneResponse(entity, diffToGmt));
         }
 
-        public async Task<IEnumerable<UserTimeZoneResponse>> GetByUser(int userId, int diffToGmt)
+        public async Task<IEnumerable<UserTimeZoneResponse>> GetByUser(int userId, int diffToGmt, string search)
         {
-            var entities = await repository.GetAsync(t => t.OwnerId == userId, t => t.User);
+            var entities = await repository.GetAsync(t => 
+            t.OwnerId == userId && (t.Name.Contains(search) || string.IsNullOrEmpty(search)), t => t.User);
             
             return entities.Select(entity => MapToTimeZoneResponse(entity, diffToGmt));
         }

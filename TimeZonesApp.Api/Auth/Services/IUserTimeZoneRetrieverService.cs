@@ -6,6 +6,6 @@ namespace TimeZonesApp.Api.Auth.Services
 {
     public interface IUserTimeZoneRetrieverService
     {
-        Task<IEnumerable<UserTimeZoneResponse>> GetUserTimeZones(int userId, int diffToGMT);
+        Task<IEnumerable<UserTimeZoneResponse>> GetUserTimeZones(int userId, int diffToGMT, string search);
     }
 }
