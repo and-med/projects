@@ -1,9 +1,9 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using System.Linq;
 using System.Threading.Tasks;
-using TimeZonesApp.Api.Auth.Contracts.Requests;
-using TimeZonesApp.Api.Auth.Contracts.Response;
-using TimeZonesApp.Api.Auth.Services;
+using TimeZonesApp.Auth.Contracts.Requests;
+using TimeZonesApp.Auth.Contracts.Response;
+using TimeZonesApp.Auth.Services;
 using TimeZonesApp.Infrastructure;
 
 namespace TimeZonesApp.Api.Controllers

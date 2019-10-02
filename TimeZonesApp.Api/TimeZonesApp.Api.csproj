@@ -20,6 +20,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\TimeZonesApp.Auth\TimeZonesApp.Auth.csproj" />
     <ProjectReference Include="..\TimeZonesApp.Data\TimeZonesApp.Data.csproj" />
     <ProjectReference Include="..\TimeZonesApp.Domain\TimeZonesApp.Domain.csproj" />
     <ProjectReference Include="..\TimeZonesApp.Infrastructure\TimeZonesApp.Infrastructure.csproj" />
