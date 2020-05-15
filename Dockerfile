@@ -1,8 +1,15 @@
-FROM node:alpine
-WORKDIR '/app'
-COPY package*.json ./
+FROM node:12-alpine
+
+WORKDIR /app
+
+COPY package.json ./package.json
+COPY package-lock.json ./package-lock.json
+
 RUN npm install
-COPY . .
+
+COPY public ./public
+COPY src ./src
+
 RUN npm run build
 
 FROM nginx
