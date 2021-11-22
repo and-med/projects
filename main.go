@@ -6,48 +6,48 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-type Project struct {
+type Activity struct {
 	ID string `json:"id"`
 	Name string `json:"name"`
 	Description string `json:"description"`
 }
 
-var projects = []Project {
+var activities = []Activity {
 	{ ID: "1", Name: "Checkout", Description: "Some of the work I'm doing." },
 	{ ID: "2", Name: "TimeTracker", Description: "My Time Tracker" },
 }
 
-func getProjects(c *gin.Context) {
-	c.IndentedJSON(http.StatusOK, projects)
+func getActivities(c *gin.Context) {
+	c.IndentedJSON(http.StatusOK, activities)
 }
 
-func getProjectById(c *gin.Context) {
+func getActivityById(c *gin.Context) {
 	id := c.Param("id")
-	for _, project := range projects {
-		if project.ID == id {
-			c.IndentedJSON(http.StatusOK, project)
+	for _, activity := range activities {
+		if activity.ID == id {
+			c.IndentedJSON(http.StatusOK, activity)
 			return
 		}
 	}
 	c.IndentedJSON(http.StatusNotFound, gin.H{"message": "Project Not Found!"})
 }
 
-func postProjects(c *gin.Context) {
-	var newProject Project
+func postActivity(c *gin.Context) {
+	var newActivity Activity
 
-	if err := c.BindJSON(&newProject); err != nil {
+	if err := c.BindJSON(&newActivity); err != nil {
 		return
 	}
 
-	projects = append(projects, newProject)
-	c.IndentedJSON(http.StatusCreated, newProject)
+	activities = append(activities, newActivity)
+	c.IndentedJSON(http.StatusCreated, newActivity)
 }
 
 func main() {
 	router := gin.Default()
-	router.GET("/projects", getProjects)
-	router.GET("/projects/:id", getProjectById)
-	router.POST("/projects", postProjects)
+	router.GET("/activities", getActivities)
+	router.GET("/activities/:id", getActivityById)
+	router.POST("/activities", postActivity)
 
 	router.Run("localhost:8080")
 }
