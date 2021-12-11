@@ -11,34 +11,26 @@ import (
 	"github.com/and-med/go-time-tracker/internal/repository"
 )
 
-func newActivityRepo(c *gin.Context) (*repository.ActivityRepository, error) {
+func newActivityRepo() (*repository.ActivityRepository, error) {
 	db, err := db.OpenDB()
-	if err != nil {
-		c.IndentedJSON(http.StatusInternalServerError, gin.H{"message": "Error with database!"})
-		return nil, err
-	}
-
-	return repository.NewActivityRepository(db), nil
+	return repository.NewActivityRepository(db), err
 }
 
-func newCreateActivityCommand(c *gin.Context) (*activity.CreateCommand, error) {
-	repo, err := newActivityRepo(c)
-	if err != nil {
-		return nil, err
-	}
-	cmd := activity.NewCreateCommand(repo)
-	return cmd, nil
+func newCreateActivityCommand() (*activity.CreateCommand, error) {
+	repo, err := newActivityRepo()
+	return activity.NewCreateCommand(repo), err
 }
 
 func getActivities(c *gin.Context) {
-	repo, err := newActivityRepo(c)
+	repo, err := newActivityRepo()
 	if err != nil {
+		errorConnectingToDatabase(c)
 		return
 	}
 
 	activities, err := repo.GetAll()
 	if err != nil {
-		c.IndentedJSON(http.StatusInternalServerError, gin.H{"message": "Error reading activities!"})
+		c.Error(err)
 		return
 	}
 	c.IndentedJSON(http.StatusOK, activities)
@@ -46,20 +38,21 @@ func getActivities(c *gin.Context) {
 
 func getActivityById(c *gin.Context) {
 	id_str := c.Param("id")
-	repo, err := newActivityRepo(c)
+	repo, err := newActivityRepo()
 	if err != nil {
+		errorConnectingToDatabase(c)
 		return
 	}
 
 	id, err := strconv.Atoi(id_str)
 	if err != nil {
-		c.IndentedJSON(http.StatusNotFound, gin.H{"message": "id parameter should be of integer type!"})
+		c.JSON(http.StatusBadRequest, gin.H{"error": "id parameter is invalid"})
 		return
 	}
 
 	activity, err := repo.Get(int64(id))
 	if err != nil {
-		c.IndentedJSON(http.StatusNotFound, gin.H{"message": "Activity Not Found!"})
+		errorNotFound(c)
 		return
 	}
 	c.IndentedJSON(http.StatusOK, activity)
@@ -69,24 +62,26 @@ func postActivity(c *gin.Context) {
 	var newAct activity.Activity
 
 	if err := c.BindJSON(&newAct); err != nil {
-		c.IndentedJSON(http.StatusBadRequest, gin.H{"message": "Request body is not valid Activity object!"})
+		c.JSON(http.StatusBadRequest, gin.H{"error": "body is invalid"})
 		return
 	}
 
-	cmd, err := newCreateActivityCommand(c)
+	cmd, err := newCreateActivityCommand()
 	if err != nil {
+		errorConnectingToDatabase(c)
 		return
 	}
 
 	act, err := cmd.Create(newAct)
 	if err != nil {
-		c.IndentedJSON(http.StatusInternalServerError, gin.H{"message": "Error creating activity!"})
+		c.JSON(http.StatusBadRequest, gin.H{"error": "error creating activity"})
+		return
 	}
 	c.IndentedJSON(http.StatusCreated, act)
 }
 
-func addActivityRoutes(engine *gin.Engine) {
-	engine.GET("/activities", getActivities)
-	engine.GET("/activities/:id", getActivityById)
-	engine.POST("/activities", postActivity)
+func addActivityRoutes(router *gin.RouterGroup) {
+	router.GET("/", getActivities)
+	router.GET("/:id", getActivityById)
+	router.POST("/", postActivity)
 }

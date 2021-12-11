@@ -7,7 +7,9 @@ import (
 func RunServer() error {
 	router := gin.Default()
 
-	addActivityRoutes(router)
+	api := router.Group("/api")
+	addActivityRoutes(api.Group("/activity"))
+	addTimelogRoutes(api.Group("/timelog"))
 
 	return router.Run("localhost:8080")
 }

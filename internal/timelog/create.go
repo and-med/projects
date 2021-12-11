@@ -1,4 +1,4 @@
-package activity
+package timelog
 
 type CreateCommand struct {
 	Repository
@@ -10,6 +10,6 @@ func NewCreateCommand(r Repository) *CreateCommand {
 	}
 }
 
-func (cc *CreateCommand) Create(a Activity) (Activity, error) {
-	return cc.Repository.Create(a)
+func (cc *CreateCommand) Create(tl TimeLog) (TimeLog, error) {
+	return cc.Repository.Create(tl)
 }

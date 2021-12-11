@@ -18,7 +18,7 @@ CREATE TABLE IF NOT EXISTS time_logs(
     activity_id INTEGER NOT NULL,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     start_at TIMESTAMP NOT NULL,
-    end_at TIMESTAMP,
+    end_at TIMESTAMP NULL,
     CONSTRAINT fk_time_logs_activity_id
     FOREIGN KEY(activity_id) REFERENCES activities(id)
 );

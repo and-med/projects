@@ -4,7 +4,7 @@ type Activity struct {
 	ID          string `json:"id"`
 	Name        string `json:"name"`
 	Description string `json:"description"`
-	UserId      int    `json:"user_id"`
+	UserId      int    `json:"userId"`
 }
 
 type Repository interface {
