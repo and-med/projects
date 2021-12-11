@@ -12,7 +12,7 @@ import (
 )
 
 func newActivityRepo(c *gin.Context) (*repository.ActivityRepository, error) {
-	db, err := db.InitDatabase()
+	db, err := db.OpenDB()
 	if err != nil {
 		c.IndentedJSON(http.StatusInternalServerError, gin.H{"message": "Error with database!"})
 		return nil, err
@@ -21,12 +21,12 @@ func newActivityRepo(c *gin.Context) (*repository.ActivityRepository, error) {
 	return repository.NewActivityRepository(db), nil
 }
 
-func newCreateActivityCommand(c *gin.Context) (*activity.CreateActivityCommand, error) {
+func newCreateActivityCommand(c *gin.Context) (*activity.CreateCommand, error) {
 	repo, err := newActivityRepo(c)
 	if err != nil {
 		return nil, err
 	}
-	cmd := activity.NewCreateActivityCommand(repo)
+	cmd := activity.NewCreateCommand(repo)
 	return cmd, nil
 }
 
@@ -35,7 +35,6 @@ func getActivities(c *gin.Context) {
 	if err != nil {
 		return
 	}
-	defer repo.Close()
 
 	activities, err := repo.GetAll()
 	if err != nil {
@@ -51,7 +50,6 @@ func getActivityById(c *gin.Context) {
 	if err != nil {
 		return
 	}
-	defer repo.Close()
 
 	id, err := strconv.Atoi(id_str)
 	if err != nil {
@@ -79,7 +77,6 @@ func postActivity(c *gin.Context) {
 	if err != nil {
 		return
 	}
-	defer cmd.Close()
 
 	act, err := cmd.Create(newAct)
 	if err != nil {

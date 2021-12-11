@@ -1,1 +1,3 @@
 docker run -p 80:80 -e 'PGADMIN_DEFAULT_EMAIL=user@domain.local' -e 'PGADMIN_DEFAULT_PASSWORD=SuperSecret' --name dev-pgadmin -d --network time-tracker_default dpage/pgadmin4
+
+docker run -v $(pwd)/db/migrations:/migrations --name time-tracker-migrate --network host migrate/migrate -path=/migrations/ -database postgres://admin:nV88XxSuVqW9sAKk@localhost:5432/time-tracker?sslmode=disable force -1

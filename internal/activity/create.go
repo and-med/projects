@@ -1,19 +1,15 @@
 package activity
 
-type CreateActivityCommand struct {
-	Repository ActivityRepository
+type CreateCommand struct {
+	Repository
 }
 
-func NewCreateActivityCommand(r ActivityRepository) *CreateActivityCommand {
-	return &CreateActivityCommand{
+func NewCreateCommand(r Repository) *CreateCommand {
+	return &CreateCommand{
 		Repository: r,
 	}
 }
 
-func (c *CreateActivityCommand) Create(a Activity) (Activity, error) {
+func (c *CreateCommand) Create(a Activity) (Activity, error) {
 	return c.Repository.Create(a)
-}
-
-func (c *CreateActivityCommand) Close() error {
-	return c.Repository.Close()
 }
