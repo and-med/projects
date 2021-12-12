@@ -8,17 +8,17 @@ import (
 	"golang.org/x/crypto/bcrypt"
 )
 
-type LoginService struct {
+type AuthService struct {
 	Repository
 }
 
-func NewLoginService(r Repository) *LoginService {
-	return &LoginService{
+func NewAuthService(r Repository) *AuthService {
+	return &AuthService{
 		Repository: r,
 	}
 }
 
-func (ls *LoginService) Login(username string, password string) (string, error) {
+func (ls *AuthService) Login(username string, password string) (string, error) {
 	hash, err := ls.Repository.GetPasswordHash(username)
 	if err != nil {
 		return "", err
@@ -37,7 +37,7 @@ func (ls *LoginService) Login(username string, password string) (string, error) 
 	return generateToken(user.ID)
 }
 
-func (ls *LoginService) Register(u User, password string) (User, error) {
+func (ls *AuthService) Register(u User, password string) (User, error) {
 	hash, err := bcrypt.GenerateFromPassword([]byte(password), 14)
 
 	if err != nil {

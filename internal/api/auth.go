@@ -14,24 +14,31 @@ type Login struct {
 	Password string `json:"password"`
 }
 
+type Register struct {
+	Username  string `json:"username"`
+	Password  string `json:"password"`
+	FirstName string `json:"firstName"`
+	LastName  string `json:"lastname"`
+}
+
 func newUserRepository() (auth.Repository, error) {
 	db, err := db.OpenDB()
 	return repository.NewUserRepository(db), err
 }
 
-func newLoginService() (*auth.LoginService, error) {
+func newAuthService() (*auth.AuthService, error) {
 	repo, err := newUserRepository()
-	return auth.NewLoginService(repo), err
+	return auth.NewAuthService(repo), err
 }
 
 func login(c *gin.Context) {
 	var l Login
 	if err := c.ShouldBindJSON(&l); err != nil {
-		internalServerError(c, err)
+		c.JSON(http.StatusBadRequest, gin.H{"error": err})
 		return
 	}
 
-	service, err := newLoginService()
+	service, err := newAuthService()
 	if err != nil {
 		errorConnectingToDatabase(c)
 		return
@@ -44,6 +51,32 @@ func login(c *gin.Context) {
 	}
 }
 
+func register(c *gin.Context) {
+	var r Register
+	if err := c.ShouldBindJSON(&r); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err})
+		return
+	}
+
+	service, err := newAuthService()
+	if err != nil {
+		errorConnectingToDatabase(c)
+		return
+	}
+
+	user := auth.User{
+		FirstName: r.FirstName,
+		LastName:  r.LastName,
+		Username:  r.Username,
+	}
+	if user, err := service.Register(user, r.Password); err == nil {
+		c.JSON(http.StatusOK, user)
+	} else {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err})
+	}
+}
+
 func addAuthRoutes(router *gin.RouterGroup) {
 	router.POST("/login", login)
+	router.POST("/register", register)
 }
