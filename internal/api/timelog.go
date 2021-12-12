@@ -33,7 +33,7 @@ func getTimelogById(c *gin.Context) {
 		errorConnectingToDatabase(c)
 		return
 	}
-	
+
 	if timelog, err := repo.Get(id); err == nil {
 		c.IndentedJSON(http.StatusOK, timelog)
 	} else {
@@ -73,7 +73,6 @@ func createTimelog(c *gin.Context) {
 	if err = c.ShouldBindJSON(&timelog); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err})
 	}
-
 
 	if newTimelog, err := cmd.Create(timelog); err == nil {
 		c.IndentedJSON(http.StatusOK, newTimelog)

@@ -13,3 +13,7 @@ func errorConnectingToDatabase(c *gin.Context) {
 func errorNotFound(c *gin.Context) {
 	c.JSON(http.StatusNotFound, gin.H{"error": "not found"})
 }
+
+func internalServerError(c *gin.Context, err error) {
+	c.JSON(http.StatusInternalServerError, gin.H{"error": err})
+}
