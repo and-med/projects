@@ -24,5 +24,3 @@ CREATE TABLE IF NOT EXISTS time_logs(
     CONSTRAINT fk_time_logs_activity_id
     FOREIGN KEY(activity_id) REFERENCES activities(id)
 );
-
-INSERT INTO users(first_name, last_name) VALUES('Andrii', 'Medytskyi');

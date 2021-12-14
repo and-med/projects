@@ -11,9 +11,6 @@ import (
 var (
 	activityFields    string = "id, name, description, user_id"
 	activityTableName string = "activities"
-	getAllActivities  string = fmt.Sprintf("SELECT %s FROM %s", activityFields, activityTableName)
-	getActivity       string = fmt.Sprintf("SELECT %s FROM %s WHERE id = ?", activityFields, activityTableName)
-	insertActivity    string = fmt.Sprintf("INSERT INTO %s(name, description, user_id) VALUES (?, ?, ?) RETURNING %s", activityTableName, activityFields)
 )
 
 func scanActivity(row rowScanner) (activity.Activity, error) {
@@ -35,7 +32,8 @@ func NewActivityRepository(db *sql.DB) *ActivityRepository {
 }
 
 func (r *ActivityRepository) GetAll() ([]activity.Activity, error) {
-	rows, err := r.DB.Query(getAllActivities)
+	query := fmt.Sprintf("SELECT %s FROM %s", activityFields, activityTableName)
+	rows, err := r.DB.Query(query)
 	activities := []activity.Activity{}
 
 	if err != nil {
@@ -58,13 +56,19 @@ func (r *ActivityRepository) GetAll() ([]activity.Activity, error) {
 }
 
 func (r *ActivityRepository) Get(id int64) (activity.Activity, error) {
-	row := r.DB.QueryRow(getActivity, id)
+	query := fmt.Sprintf("SELECT %s FROM %s WHERE id = $1", activityFields, activityTableName)
+	row := r.DB.QueryRow(query, id)
 
 	return scanActivity(row)
 }
 
 func (r *ActivityRepository) Create(a activity.Activity) (activity.Activity, error) {
-	row := r.DB.QueryRow(insertActivity, a.Name, a.Description)
+	query := fmt.Sprintf(
+		"INSERT INTO %s(name, description, user_id) VALUES ($1, $2, $3) RETURNING %s",
+		activityTableName,
+		activityFields,
+	)
+	row := r.DB.QueryRow(query, a.Name, a.Description, a.UserId)
 
 	return scanActivity(row)
 }

@@ -1,6 +1,7 @@
 package api
 
 import (
+	"log"
 	"net/http"
 	"strconv"
 
@@ -77,12 +78,13 @@ func createTimelog(c *gin.Context) {
 	if newTimelog, err := cmd.Create(timelog); err == nil {
 		c.IndentedJSON(http.StatusOK, newTimelog)
 	} else {
+		log.Print("error creating timelog:", err)
 		c.JSON(http.StatusBadRequest, gin.H{"error": "error creating timelog"})
 	}
 }
 
 func addTimelogRoutes(router *gin.RouterGroup) {
-	router.GET("/:id", getTimelogById)
-	router.GET("/activity/:id", getTimelogsByActivityId)
-	router.POST("/", createTimelog)
+	router.GET(":id", getTimelogById)
+	router.GET("activity/:id", getTimelogsByActivityId)
+	router.POST("", createTimelog)
 }

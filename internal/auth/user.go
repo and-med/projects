@@ -10,5 +10,6 @@ type User struct {
 type Repository interface {
 	GetPasswordHash(username string) (string, error)
 	GetByUsername(username string) (User, error)
+	GetById(id int) (User, error)
 	Create(u User, passwordHash string) (User, error)
 }

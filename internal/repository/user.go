@@ -29,7 +29,7 @@ func NewUserRepository(db *sql.DB) *UserRepository {
 }
 
 func (ur *UserRepository) GetPasswordHash(username string) (string, error) {
-	query := fmt.Sprintf("SELECT password_hash FROM %s WHERE username=?", userTableName)
+	query := fmt.Sprintf("SELECT password_hash FROM %s WHERE username=$1", userTableName)
 	row := ur.DB.QueryRow(query, username)
 
 	var passwordHash string
@@ -38,14 +38,21 @@ func (ur *UserRepository) GetPasswordHash(username string) (string, error) {
 }
 
 func (ur *UserRepository) GetByUsername(username string) (auth.User, error) {
-	query := fmt.Sprintf("SELECT %s FROM %s WHERE username=?", userFields, userTableName)
+	query := fmt.Sprintf("SELECT %s FROM %s WHERE username=$1", userFields, userTableName)
 	row := ur.DB.QueryRow(query, username)
 
 	return scanUser(row)
 }
 
+func (ur *UserRepository) GetById(id int) (auth.User, error) {
+	query := fmt.Sprintf("SELECT %s FROM %s WHERE id=$1", userFields, userTableName)
+	row := ur.DB.QueryRow(query, id)
+
+	return scanUser(row)
+}
+
 func (ur *UserRepository) Create(u auth.User, passwordHash string) (auth.User, error) {
-	query := fmt.Sprintf("INSERT INTO %s(username, first_name, last_name, password_hash) VALUES(?, ?, ?, ?) RETURNING %s", userTableName, userFields)
+	query := fmt.Sprintf("INSERT INTO %s(username, first_name, last_name, password_hash) VALUES($1, $2, $3, $4) RETURNING %s", userTableName, userFields)
 	row := ur.DB.QueryRow(query, u.Username, u.FirstName, u.LastName, passwordHash)
 
 	return scanUser(row)

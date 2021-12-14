@@ -1,6 +1,7 @@
 package api
 
 import (
+	"log"
 	"net/http"
 
 	"github.com/and-med/go-time-tracker/internal/auth"
@@ -34,12 +35,14 @@ func newAuthService() (*auth.AuthService, error) {
 func login(c *gin.Context) {
 	var l Login
 	if err := c.ShouldBindJSON(&l); err != nil {
+		log.Print("error binding json", err)
 		c.JSON(http.StatusBadRequest, gin.H{"error": err})
 		return
 	}
 
 	service, err := newAuthService()
 	if err != nil {
+		log.Print("error connecting to db", err)
 		errorConnectingToDatabase(c)
 		return
 	}
@@ -47,19 +50,22 @@ func login(c *gin.Context) {
 	if token, err := service.Login(l.Username, l.Password); err == nil {
 		c.JSON(http.StatusOK, gin.H{"accessToken": token})
 	} else {
-		c.JSON(http.StatusUnauthorized, gin.H{"error": err})
+		log.Print("error logging in:", err)
+		c.JSON(http.StatusUnauthorized, gin.H{"error": "user is not authorized"})
 	}
 }
 
 func register(c *gin.Context) {
 	var r Register
 	if err := c.ShouldBindJSON(&r); err != nil {
+		log.Print("error binding json", err)
 		c.JSON(http.StatusBadRequest, gin.H{"error": err})
 		return
 	}
 
 	service, err := newAuthService()
 	if err != nil {
+		log.Print("error connecting to db", err)
 		errorConnectingToDatabase(c)
 		return
 	}
@@ -72,11 +78,22 @@ func register(c *gin.Context) {
 	if user, err := service.Register(user, r.Password); err == nil {
 		c.JSON(http.StatusOK, user)
 	} else {
+		log.Print("error registering user:", err)
 		c.JSON(http.StatusBadRequest, gin.H{"error": err})
 	}
 }
 
+func mustAuthorize(c *gin.Context) {
+	if user, exist := c.Get("user"); exist {
+		if _, ok := user.(auth.User); ok {
+			return
+		}
+	}
+
+	c.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{"error": "unauthorized"})
+}
+
 func addAuthRoutes(router *gin.RouterGroup) {
-	router.POST("/login", login)
-	router.POST("/register", register)
+	router.POST("login", login)
+	router.POST("register", register)
 }

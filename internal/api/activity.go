@@ -30,7 +30,7 @@ func getActivities(c *gin.Context) {
 
 	activities, err := repo.GetAll()
 	if err != nil {
-		c.Error(err)
+		c.JSON(http.StatusBadRequest, gin.H{"error": "error reading activities"})
 		return
 	}
 	c.IndentedJSON(http.StatusOK, activities)
@@ -74,14 +74,14 @@ func postActivity(c *gin.Context) {
 
 	act, err := cmd.Create(newAct)
 	if err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": "error creating activity"})
+		c.JSON(http.StatusBadRequest, gin.H{"error": err})
 		return
 	}
 	c.IndentedJSON(http.StatusCreated, act)
 }
 
 func addActivityRoutes(router *gin.RouterGroup) {
-	router.GET("/", getActivities)
-	router.GET("/:id", getActivityById)
-	router.POST("/", postActivity)
+	router.GET("", getActivities)
+	router.GET(":id", getActivityById)
+	router.POST("", postActivity)
 }

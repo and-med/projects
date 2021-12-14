@@ -5,12 +5,14 @@ import (
 )
 
 func RunServer() error {
-	router := gin.Default()
+	engine := gin.Default()
 
-	api := router.Group("/api")
-	addAuthRoutes(api)
-	addActivityRoutes(api.Group("/activity"))
-	addTimelogRoutes(api.Group("/timelog"))
+	engine.Use(AuthMidleware())
 
-	return router.Run("localhost:8080")
+	apiRouter := engine.Group("/api")
+	addAuthRoutes(apiRouter)
+	addActivityRoutes(apiRouter.Group("/activity", mustAuthorize))
+	addTimelogRoutes(apiRouter.Group("/timelog", mustAuthorize))
+
+	return engine.Run("localhost:8080")
 }

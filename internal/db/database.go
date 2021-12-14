@@ -44,16 +44,9 @@ func MigrateDB() error {
 	}
 	defer m.Close()
 
-	version, _, err := m.Version()
-	if err != nil {
-		return err
-	}
+	err = m.Up()
 
-	if version != 1 {
-		err = m.Up()
-	}
-
-	if err != nil {
+	if err != nil && err != migrate.ErrNoChange {
 		return err
 	}
 
