@@ -16,8 +16,8 @@ var (
 type Timelog struct {
 	ID         int          `json:"id"`
 	ActivityId int          `json:"activityId"`
-	CreatedAt  sql.NullTime    `json:"createdAt"`
-	StartAt    sql.NullTime    `json:"startAt"`
+	CreatedAt  sql.NullTime `json:"createdAt"`
+	StartAt    sql.NullTime `json:"startAt"`
 	EndAt      sql.NullTime `json:"endAt"`
 }
 

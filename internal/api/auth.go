@@ -83,6 +83,19 @@ func register(c *gin.Context) {
 	}
 }
 
+func me(c *gin.Context) {
+	value, exists := c.Get("user")
+	if !exists {
+		c.JSON(http.StatusUnauthorized, gin.H{"error": "unauthorized"})
+	}
+
+	if user, ok := value.(auth.User); ok {
+		c.JSON(http.StatusOK, user)
+	} else {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "authorization error"})
+	}
+}
+
 func mustAuthorize(c *gin.Context) {
 	if user, exist := c.Get("user"); exist {
 		if _, ok := user.(auth.User); ok {
@@ -96,4 +109,5 @@ func mustAuthorize(c *gin.Context) {
 func addAuthRoutes(router *gin.RouterGroup) {
 	router.POST("login", login)
 	router.POST("register", register)
+	router.GET("me", mustAuthorize, me)
 }
