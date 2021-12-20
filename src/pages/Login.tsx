@@ -24,6 +24,8 @@ const Login = () => {
     [onLogin, navigate]
   );
 
+  const onSignUp = useCallback(() => navigate('/signup'), [navigate]);
+
   if (user) {
     return <Navigate to='/' />;
   }
@@ -52,6 +54,9 @@ const Login = () => {
       </Grid>
       <Grid item sx={{ m: 1 }} md={6} xs={12}>
         <Grid container direction='row-reverse'>
+          <Button type='button' onClick={onSignUp}>
+            Or Sign Up
+          </Button>
           <Button type='submit'>Login</Button>
         </Grid>
       </Grid>

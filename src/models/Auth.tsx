@@ -5,7 +5,7 @@ interface User {
   username: string;
 }
 
-export interface RegisterInfo {
+export interface SignupInfo {
   firstName: string;
   lastName: string;
   username: string;

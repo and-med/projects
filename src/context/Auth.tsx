@@ -7,8 +7,8 @@ import React, {
   useState,
 } from 'react';
 import { Navigate } from 'react-router-dom';
-import User, { RegisterInfo } from '../models/Auth';
-import { getToken, login, me, register, setToken } from '../services/Auth';
+import User, { SignupInfo } from '../models/Auth';
+import { getToken, login, me, signup, setToken } from '../services/Auth';
 
 const actions = {
   LOGIN_SUCCESS: 'LOGIN_SUCCESS',
@@ -109,10 +109,10 @@ export const useLogin = () => {
   return onLogin;
 };
 
-export const useRegister = () => {
-  const onRegister = useCallback((registerInfo: RegisterInfo) => {
-    return register(registerInfo);
+export const useSignup = () => {
+  const onSignup = useCallback((signupInfo: SignupInfo) => {
+    return signup(signupInfo);
   }, []);
 
-  return onRegister;
+  return onSignup;
 };

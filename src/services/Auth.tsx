@@ -1,5 +1,5 @@
 import axios from '../utils/axios';
-import User, { AuthResponse, RegisterInfo } from '../models/Auth';
+import User, { AuthResponse, SignupInfo } from '../models/Auth';
 
 const ACCESS_TOKEN_KEY = 'time_tracker_token';
 
@@ -19,6 +19,6 @@ export const me = () => {
   return axios.get<User>('/api/me');
 };
 
-export const register = (registerInfo: RegisterInfo) => {
-  return axios.post<User>('/api/register', registerInfo);
+export const signup = (signupInfo: SignupInfo) => {
+  return axios.post<User>('/api/register', signupInfo);
 };
