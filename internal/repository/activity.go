@@ -39,6 +39,7 @@ func (r *ActivityRepository) GetAll() ([]activity.Activity, error) {
 	if err != nil {
 		return activities, err
 	}
+	defer rows.Close()
 
 	for rows.Next() {
 		act, err := scanActivity(rows)

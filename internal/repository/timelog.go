@@ -60,6 +60,7 @@ func (r *TimelogRepository) GetByActivityId(activityId int) ([]timelog.TimeLog, 
 	if err != nil {
 		return timelogs, err
 	}
+	defer rows.Close()
 
 	for rows.Next() {
 		tl, err := scanTimelog(rows)

@@ -13,3 +13,7 @@ type Repository interface {
 	GetById(id int) (User, error)
 	Create(u User, passwordHash string) (User, error)
 }
+
+type AuthorizedUserRetriever interface {
+	Get() (User, bool)
+}

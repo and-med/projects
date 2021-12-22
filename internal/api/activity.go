@@ -16,9 +16,10 @@ func newActivityRepo() (*repository.ActivityRepository, error) {
 	return repository.NewActivityRepository(db), err
 }
 
-func newCreateActivityCommand() (*activity.CreateCommand, error) {
+func newCreateActivityCommand(c *gin.Context) (*activity.CreateCommand, error) {
 	repo, err := newActivityRepo()
-	return activity.NewCreateCommand(repo), err
+	retriever := NewAuthorizedUserRetriever(c)
+	return activity.NewCreateCommand(repo, retriever), err
 }
 
 func getActivities(c *gin.Context) {
@@ -66,7 +67,7 @@ func postActivity(c *gin.Context) {
 		return
 	}
 
-	cmd, err := newCreateActivityCommand()
+	cmd, err := newCreateActivityCommand(c)
 	if err != nil {
 		errorConnectingToDatabase(c)
 		return

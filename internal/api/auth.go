@@ -22,6 +22,25 @@ type Register struct {
 	LastName  string `json:"lastname"`
 }
 
+type AuthorizedUserRetriever struct {
+	Context *gin.Context
+}
+
+func NewAuthorizedUserRetriever(c *gin.Context) *AuthorizedUserRetriever {
+	return &AuthorizedUserRetriever{
+		Context: c,
+	}
+}
+
+func (r *AuthorizedUserRetriever) Get() (auth.User, bool) {
+	if value, exists := r.Context.Get("user"); exists {
+		user, ok := value.(auth.User)
+		return user, ok
+	}
+
+	return auth.User{}, false
+}
+
 func newUserRepository() (auth.Repository, error) {
 	db, err := db.OpenDB()
 	return repository.NewUserRepository(db), err
@@ -84,15 +103,12 @@ func register(c *gin.Context) {
 }
 
 func me(c *gin.Context) {
-	value, exists := c.Get("user")
-	if !exists {
-		c.JSON(http.StatusUnauthorized, gin.H{"error": "unauthorized"})
-	}
+	retriever := NewAuthorizedUserRetriever(c)
 
-	if user, ok := value.(auth.User); ok {
+	if user, ok := retriever.Get(); ok {
 		c.JSON(http.StatusOK, user)
 	} else {
-		c.JSON(http.StatusInternalServerError, gin.H{"error": "authorization error"})
+		c.JSON(http.StatusUnauthorized, gin.H{"error": "unauthorized"})
 	}
 }
 
