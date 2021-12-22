@@ -17,6 +17,7 @@ interface SnackbarContextModel {
   snackbars: SnackbarState[];
   enqueue: (snackbar: SnackbarInfo) => void;
   enqueueError: (message: string) => void;
+  enqueueSuccess: (message: string) => void;
   onClose: (snackbar: SnackbarState) => void;
 }
 
@@ -24,6 +25,7 @@ const SnackbarContext = React.createContext<SnackbarContextModel>({
   snackbars: [],
   enqueue: () => {},
   enqueueError: () => {},
+  enqueueSuccess: () => {},
   onClose: () => {},
 });
 
@@ -81,13 +83,20 @@ export const SnackbarProvider = (props: { children: React.ReactElement }) => {
     [enqueue]
   );
 
+  const enqueueSuccess = useCallback(
+    (message: string) => {
+      enqueue({ title: message, type: 'success' });
+    },
+    [enqueue]
+  );
+
   const onClose = useCallback((snackbar: SnackbarState) => {
     setSnackbars((old) => old.filter((s) => s.id !== snackbar.id));
   }, []);
 
   return (
     <SnackbarContext.Provider
-      value={{ snackbars, onClose, enqueue, enqueueError }}
+      value={{ snackbars, onClose, enqueue, enqueueError, enqueueSuccess }}
     >
       {props.children}
       <SnackbarList />
@@ -96,9 +105,15 @@ export const SnackbarProvider = (props: { children: React.ReactElement }) => {
 };
 
 export const useSnackbar = () => {
-  const { enqueue } = useContext(SnackbarContext);
+  const context = useContext(SnackbarContext);
 
-  return enqueue;
+  return context;
+};
+
+export const useSuccessSnackbar = () => {
+  const { enqueueSuccess } = useContext(SnackbarContext);
+
+  return enqueueSuccess;
 };
 
 export const useErrorSnackbar = () => {

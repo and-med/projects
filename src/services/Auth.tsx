@@ -1,6 +1,3 @@
-import axios from '../utils/axios';
-import User, { AuthResponse, SignupInfo } from '../models/Auth';
-
 const ACCESS_TOKEN_KEY = 'time_tracker_token';
 
 export const getToken: () => string | null = () => {
@@ -13,16 +10,4 @@ export const setToken = (token: string) => {
 
 export const removeToken = () => {
   localStorage.removeItem(ACCESS_TOKEN_KEY);
-};
-
-export const login = (username: string, password: string) => {
-  return axios.post<AuthResponse>('/api/login', { username, password });
-};
-
-export const me = () => {
-  return axios.get<User>('/api/me');
-};
-
-export const signup = (signupInfo: SignupInfo) => {
-  return axios.post<User>('/api/register', signupInfo);
 };

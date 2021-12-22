@@ -3,7 +3,7 @@ import { Box } from '@mui/system';
 
 const Dashboard = () => {
   return (
-    <Box>
+    <Box component='form'>
       <Typography variant='h2'>Dashboard</Typography>
     </Box>
   );

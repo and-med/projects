@@ -9,6 +9,7 @@ import { SnackbarProvider } from './context/Snackbar';
 import Layout from './components/Layout';
 import { AppThemeProvider } from './context/Theme';
 import Dashboard from './pages/Dashboard';
+import NewActivity from './pages/NewActivity';
 
 const App = () => {
   return (
@@ -25,6 +26,16 @@ const App = () => {
                   <AuthGuard>
                     <Layout>
                       <Activities />
+                    </Layout>
+                  </AuthGuard>
+                }
+              />
+              <Route
+                path='/activities/new'
+                element={
+                  <AuthGuard>
+                    <Layout>
+                      <NewActivity />
                     </Layout>
                   </AuthGuard>
                 }

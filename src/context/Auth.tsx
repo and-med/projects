@@ -8,19 +8,13 @@ import React, {
 } from 'react';
 import { Navigate, useNavigate } from 'react-router-dom';
 import User, { SignupInfo } from '../models/Auth';
-import {
-  getToken,
-  login,
-  me,
-  signup,
-  setToken,
-  removeToken,
-} from '../services/Auth';
+import { login, me, signup } from '../api/Auth';
 import { useErrorSnackbar } from './Snackbar';
+import { getToken, removeToken, setToken } from '../services/Auth';
 
 const actions = {
   LOGIN_SUCCESS: 'LOGIN_SUCCESS',
-  LOUGOUT: '',
+  LOUGOUT: 'LOGOUT',
 };
 
 interface AuthState {
