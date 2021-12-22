@@ -3,6 +3,7 @@ import { Button, Grid, TextField } from '@mui/material';
 import { useAuth, useLogin } from '../context/Auth';
 import { useCallback } from 'react';
 import { Navigate, useNavigate } from 'react-router-dom';
+import { useErrorSnackbar } from '../context/Snackbar';
 
 interface LoginInfo {
   username: string;
@@ -14,20 +15,25 @@ const Login = () => {
   const onLogin = useLogin();
   const navigate = useNavigate();
   const user = useAuth();
+  const enqueue = useErrorSnackbar();
 
   const onSubmit = useCallback(
     (data: LoginInfo) => {
-      return onLogin(data.username, data.password).then(() => {
-        navigate('/');
-      });
+      return onLogin(data.username, data.password)
+        .then(() => {
+          navigate('/');
+        })
+        .catch(() => {
+          enqueue('Error occurred logging in!');
+        });
     },
-    [onLogin, navigate]
+    [onLogin, navigate, enqueue]
   );
 
   const onSignUp = useCallback(() => navigate('/signup'), [navigate]);
 
   if (user) {
-    return <Navigate to='/' />;
+    return <Navigate to='/activities' />;
   }
 
   return (

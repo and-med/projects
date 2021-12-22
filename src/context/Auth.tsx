@@ -6,12 +6,21 @@ import React, {
   useReducer,
   useState,
 } from 'react';
-import { Navigate } from 'react-router-dom';
+import { Navigate, useNavigate } from 'react-router-dom';
 import User, { SignupInfo } from '../models/Auth';
-import { getToken, login, me, signup, setToken } from '../services/Auth';
+import {
+  getToken,
+  login,
+  me,
+  signup,
+  setToken,
+  removeToken,
+} from '../services/Auth';
+import { useErrorSnackbar } from './Snackbar';
 
 const actions = {
   LOGIN_SUCCESS: 'LOGIN_SUCCESS',
+  LOUGOUT: '',
 };
 
 interface AuthState {
@@ -41,6 +50,12 @@ const authReducer = (state: AuthState, action: AuthAction) => {
         user: action.payload,
       };
     }
+    case actions.LOUGOUT: {
+      return {
+        ...state,
+        user: null,
+      };
+    }
   }
   return state;
 };
@@ -54,6 +69,7 @@ const logginSuccess = (dispatch: React.Dispatch<AuthAction>) => {
 export const AuthProvider = (props: { children: React.ReactElement }) => {
   const [state, dispatch] = useReducer(authReducer, initialState);
   const [isLoggingIn, setIsLoggingIn] = useState(true);
+  const enqueue = useErrorSnackbar();
 
   useEffect(() => {
     const token = getToken();
@@ -61,13 +77,22 @@ export const AuthProvider = (props: { children: React.ReactElement }) => {
     if (token && !state.user) {
       setIsLoggingIn(true);
 
-      logginSuccess(dispatch).finally(() => {
-        setIsLoggingIn(false);
-      });
+      logginSuccess(dispatch)
+        .catch((error) => {
+          if (error.response.status === 401) {
+            removeToken();
+            enqueue('Your token has expired please login again.');
+          } else {
+            enqueue('Error occurred on authentication');
+          }
+        })
+        .finally(() => {
+          setIsLoggingIn(false);
+        });
     } else {
       setIsLoggingIn(false);
     }
-  }, [state, dispatch]);
+  }, [state, dispatch, enqueue]);
 
   return (
     <AuthContext.Provider value={{ state, dispatch }}>
@@ -115,4 +140,17 @@ export const useSignup = () => {
   }, []);
 
   return onSignup;
+};
+
+export const useLogout = () => {
+  const { dispatch } = useContext(AuthContext);
+  const navigate = useNavigate();
+
+  const onLogout = useCallback(() => {
+    removeToken();
+    dispatch({ type: actions.LOUGOUT });
+    navigate('/login');
+  }, [dispatch, navigate]);
+
+  return onLogout;
 };

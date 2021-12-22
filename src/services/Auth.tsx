@@ -11,6 +11,10 @@ export const setToken = (token: string) => {
   localStorage.setItem(ACCESS_TOKEN_KEY, token);
 };
 
+export const removeToken = () => {
+  localStorage.removeItem(ACCESS_TOKEN_KEY);
+};
+
 export const login = (username: string, password: string) => {
   return axios.post<AuthResponse>('/api/login', { username, password });
 };

@@ -3,19 +3,22 @@ import { useCallback } from 'react';
 import { useForm } from 'react-hook-form';
 import { useNavigate } from 'react-router-dom';
 import { useSignup } from '../context/Auth';
+import { useErrorSnackbar } from '../context/Snackbar';
 import { SignupInfo } from '../models/Auth';
 
 const Signup = () => {
   const { register, handleSubmit } = useForm();
   const onSignup = useSignup();
   const navigate = useNavigate();
+  const enqueue = useErrorSnackbar();
 
   const onSubmit = useCallback(
     (info: SignupInfo) => {
-      console.log(info);
-      return onSignup(info).then(() => navigate('/login'));
+      return onSignup(info)
+        .then(() => navigate('/login'))
+        .catch(() => enqueue('Error occurred during signup!'));
     },
-    [onSignup, navigate]
+    [onSignup, navigate, enqueue]
   );
 
   const onLogin = useCallback(() => navigate('/login'), [navigate]);
