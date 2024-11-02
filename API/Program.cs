@@ -25,6 +25,8 @@ namespace API
                     var userManager = services.GetRequiredService<UserManager<AppUser>>();
                     context.Database.Migrate();
                     Seed.SeedData(context, userManager).Wait();
+                    var logger = services.GetRequiredService<ILogger<Program>>();
+                    logger.LogInformation("Successfully seeded data!");
                 }
                 catch (Exception ex)
                 {

@@ -4,8 +4,9 @@ Created as a follow along project for [Udemy course](https://www.udemy.com/cours
 
 Technologies: .NET Core, ASP.NET Core, React, MobX, SignalR, MediatR, Entity Framework Core, MySql, Azure
 
-# Live version
-https://reactivitie.azurewebsites.net/
+## Running locally
 
-login: bob@test.com
-password: Pa$$w0rd
+```bash
+docker-compose up
+## the app will be running at localhost:5000
+```

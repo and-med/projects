@@ -1,0 +1,7 @@
+services:
+  app:
+    build: .
+    ports:
+      - "5000:80"
+    volumes:
+      - ./reactivities-data:/app/data

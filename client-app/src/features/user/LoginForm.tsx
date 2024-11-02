@@ -1,6 +1,6 @@
 import React, { useContext } from 'react';
 import { Form as FinalForm, Field } from 'react-final-form';
-import { Form, Button, Header } from 'semantic-ui-react';
+import { Form, Button, Header, CommentText, SegmentGroup, Segment } from 'semantic-ui-react';
 import TextInput from '../../app/common/form/TextInput';
 import { RootStoreContext } from '../../app/stores/rootStore';
 import { IUserFormValues } from '../../app/models/user';
@@ -66,6 +66,14 @@ const LoginForm = () => {
                         content='Login'
                         fluid
                     />
+                    <Segment.Group>
+                        <Segment>
+                            <CommentText>example login: bob@test.com, jane@test.com, tom@test.com</CommentText>
+                        </Segment>
+                        <Segment>
+                            <CommentText>password: Pa$$w0rd</CommentText>
+                        </Segment>
+                    </Segment.Group>
                 </Form>
             )}
         />
