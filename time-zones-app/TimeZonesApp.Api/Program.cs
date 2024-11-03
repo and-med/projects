@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using System.Threading.Tasks;
@@ -16,6 +17,9 @@ namespace TimeZonesApp.Api
 
             using (var serviceScope = host.Services.CreateScope())
             {
+                var context = serviceScope.ServiceProvider.GetRequiredService<TimeZonesContext>();
+                context.Database.Migrate();
+
                 var userManager = serviceScope.ServiceProvider.GetRequiredService<UserManager<User>>();
                 var roleManager = serviceScope.ServiceProvider.GetRequiredService<RoleManager<Role>>();
 

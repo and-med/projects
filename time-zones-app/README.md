@@ -4,11 +4,6 @@ This is an example app that implements Rest API via dotnet core 3.0, ReactJs fro
 
 ## Running locally
 
-Generated db:
-```bash
-make update-database
-```
-
 ```bash
 docker-compose up
 ```
