@@ -1,0 +1,9 @@
+.TimeZoneCreate {
+    height: 100%;
+    width: 90%;
+    border: 1px solid #eee;
+    box-shadow: 0 2px 3px #ccc;
+    box-sizing: border-box;
+    margin: 20px auto;    
+    text-align: center;
+}
