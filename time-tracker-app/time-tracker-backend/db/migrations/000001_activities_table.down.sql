@@ -1,3 +1,0 @@
-DROP TABLE IF EXISTS time_logs;
-DROP TABLE IF EXISTS activities;
-DROP TABLE IF EXISTS users;
