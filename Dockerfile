@@ -16,7 +16,7 @@ COPY TimeZonesApp.Data/ ./TimeZonesApp.Data/
 COPY TimeZonesApp.Domain/ ./TimeZonesApp.Domain/
 COPY TimeZonesApp.Infrastructure/ ./TimeZonesApp.Infrastructure/
 
-RUN dotnet publish -c Release -o out
+RUN dotnet publish -c Debug -o out
 
 FROM mcr.microsoft.com/dotnet/core/sdk:3.0
 WORKDIR /app
