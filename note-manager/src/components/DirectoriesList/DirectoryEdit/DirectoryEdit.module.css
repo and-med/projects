@@ -1,0 +1,17 @@
+.Directory {
+    display: flex;
+    align-items: center;
+    white-space: nowrap;
+    cursor: pointer;
+    border: none;
+    background: none;
+    box-sizing: border-box;
+}
+
+.FolderIcon {
+    padding: 5px;
+}
+
+.DirectoryNameInput {
+    width: 100px;
+}

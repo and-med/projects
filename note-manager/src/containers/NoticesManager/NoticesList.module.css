@@ -1,0 +1,12 @@
+.NoticesList {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: left;
+    align-items: flex-start;
+    align-content: flex-start;
+    flex: 1;
+}
+
+.NoResults {
+    padding: 2em;
+}

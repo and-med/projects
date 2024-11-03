@@ -1,0 +1,55 @@
+.NoteManager {
+    display: flex;
+    flex-direction: column;
+    padding: 10px;
+}
+
+.SidePanel {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-around;
+    flex: 1 0 auto;
+}
+
+.DirectoriesList {
+    display: flex;
+    overflow-x: auto;
+    box-shadow: 3px 2px 2px #aaa;
+    border: 1px solid #aaa;
+    flex: 1 0 auto;
+}
+
+.NoteManagerContent {
+    display: flex;
+    flex-direction: column;
+    flex: 1 0 auto;
+    padding: 10px;
+}
+
+
+@media (min-width: 768px) {
+    .NoteManager {
+        flex-direction: row;
+    }
+
+    .SidePanel {
+        display: inline-flex;
+        flex-direction: unset;
+        flex: 0 0 auto;
+        align-content: flex-start;
+        max-width: min-content;
+        flex-wrap: wrap;
+    }
+
+    .DirectoriesList {
+        display: inline-flex;
+        min-width: 400px;
+        max-width: 400px;
+        flex: 1 0 auto;
+    }
+
+    .NoteManagerContent {
+        display: inline-flex;
+        flex: 1 1 auto;
+    }
+}

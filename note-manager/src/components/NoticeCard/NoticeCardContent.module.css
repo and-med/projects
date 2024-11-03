@@ -1,0 +1,19 @@
+.InlineInput {
+    width: 100%;
+    font-size: 1.17em;
+    margin-block-start: 1em;
+    margin-block-end: 1em;
+    text-align: center;
+    box-sizing: border-box;
+}
+
+.NoteTitle {
+    cursor: pointer;
+    font-size: 1.17em;
+    margin-block-start: 1em;
+    margin-block-end: 1em;
+}
+
+.ButtonContainer {
+    margin-block-end: 0.5em;
+}
