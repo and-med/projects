@@ -1,8 +1,9 @@
 import axios from 'axios';
 import { updateObject } from '../shared/utility';
+import { apiBaseUrl } from './axiosAuth';
 
 const instance = axios.create({
-    baseURL: 'https://localhost:44387/users/',
+    baseURL: `${apiBaseUrl}/users/`,
     headers: {
         'Content-Type': 'application/json'
     }

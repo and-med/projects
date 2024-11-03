@@ -1,8 +1,9 @@
 import axios from 'axios';
 import { updateObject } from '../shared/utility';
+import { apiBaseUrl } from './axiosAuth';
 
 const instance = axios.create({
-    baseURL: 'https://localhost:44387/user-time-zones/',
+    baseURL: `${apiBaseUrl}/user-time-zones/`,
     headers: {
         'Content-Type': 'application/json'
     }

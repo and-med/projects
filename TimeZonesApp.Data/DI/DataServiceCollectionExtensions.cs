@@ -11,7 +11,7 @@ namespace TimeZonesApp.Data.DI
         public static void AddDataServices(this IServiceCollection services, IConfiguration configuration)
         {
             services.AddDbContext<TimeZonesContext>(options =>
-                options.UseSqlServer(configuration.GetConnectionString("TimeZonesDb")));
+                options.UseSqlite(configuration.GetConnectionString("TimeZonesDb")));
 
             services.AddIdentityCore<User>()
                 .AddRoles<Role>()
