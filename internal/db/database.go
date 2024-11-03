@@ -35,13 +35,14 @@ func MigrateDB() error {
 	url := fmt.Sprintf("postgresql://%s:%s@%s:%s/%s?sslmode=disable", user, password, host, port, dbname)
 
 	m, err := migrate.New("file://db/migrations", url)
+	if err != nil {
+		return fmt.Errorf("error migrating db: %w", err)
+	}
+
 	m.Log = &MigrationLogger{
 		Log: log.Default(),
 	}
 
-	if err != nil {
-		return err
-	}
 	defer m.Close()
 
 	err = m.Up()

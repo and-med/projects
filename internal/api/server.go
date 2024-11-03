@@ -14,5 +14,5 @@ func RunServer() error {
 	addActivityRoutes(apiRouter.Group("/activity", mustAuthorize))
 	addTimelogRoutes(apiRouter.Group("/timelog", mustAuthorize))
 
-	return engine.Run("localhost:8080")
+	return engine.Run(":8080")
 }
