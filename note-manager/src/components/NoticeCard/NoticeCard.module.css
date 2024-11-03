@@ -1,0 +1,16 @@
+.NoticeCard {
+    flex: 0 1 33%;
+    text-align: center;
+}
+
+@media (min-width: 768px) {
+    .NoticeCard {
+        flex: 0 1 25%;
+    }
+}
+
+@media (min-width: 1224px) {
+    .NoticeCard {
+        flex: 0 1 12%;
+    }
+}

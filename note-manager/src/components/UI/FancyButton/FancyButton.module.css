@@ -1,0 +1,22 @@
+.FancyButton {
+    color: #40A4C8;
+    text-transform: uppercase;
+    background: #ffffff;
+    padding: 10px;
+    border: 2px solid #40A4C8;
+    border-radius: 6px;
+    display: inline-block;
+    transition: all 0.3s ease 0s;
+    cursor: pointer;
+}
+
+.FancyButton:hover {    
+    color: #494949;
+    border-radius: 50px;
+    border-color: #494949;
+    transition: all 0.3s ease 0s;
+}
+
+.FancyButton:focus {
+    outline: none;
+}

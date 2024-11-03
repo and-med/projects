@@ -1,0 +1,9 @@
+[submodule "go-time-tracker"]
+	path = go-time-tracker
+	url = git@github.com:and-med/go-time-tracker.git
+[submodule "time-tracker-backend"]
+	path = time-tracker-backend
+	url = git@github.com:and-med/go-time-tracker.git
+[submodule "time-tracker-web"]
+	path = time-tracker-web
+	url = git@github.com:and-med/time-tracker-web.git

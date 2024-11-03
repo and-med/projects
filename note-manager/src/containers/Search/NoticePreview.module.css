@@ -1,0 +1,53 @@
+.PageTitle {
+    margin: 1em;
+}
+
+.NoticePreview {
+    display: flex;
+    flex-direction: column;
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 1em;
+}
+
+.Row {
+    display: flex;
+}
+
+.Row h3 {
+    flex: 0 0 150px;
+}
+
+.Row .Content {
+    display: flex;
+    flex: 1 0 100px;
+    flex-direction: column;
+    text-align: left;
+    justify-content: center;
+    text-overflow: clip;
+}
+
+.Row .Content p {
+    margin: 0;
+}
+
+.Row .TagContent {
+    display: flex;
+    flex-direction: row;
+}
+
+.Row .TagContent .Tag {
+    display: flex;
+    flex-direction: column;
+    text-align: left;
+    justify-content: center;
+    text-overflow: clip;
+}
+
+.Row .TagContent .Tag span {
+    padding: 0.2em 0.5em;
+    margin: 0.5em;
+    border-radius: 5px;
+    background-color: #40A4C8;
+    color: white;
+}
